@@ -11,6 +11,7 @@ GIT_PROJECT="git@github.com:Boemska/metanav.git"
 SCRLOC="/tmp/metanavigator"
 BUILDSTP="/Apps/utilities/metadata/buildMetaNavigator"
 BUILDSERVER="https://apps.boemskats.com/SASStoredProcess/do"
+TESTSCPTARGET="apps.boemskats.com:/pub/ht/builds/metanavigator"
 #GIT_BUILD="<link_to_git>"
 ####################################################################
 echo
@@ -82,7 +83,7 @@ mkdir $SCRLOC/tmp/test
 cp -a $SCRLOC/tmp/$PROJECT_FOLDER/dist/. $SCRLOC/tmp/test
 cp $SCRLOC/tmp/contents/h54sConfig_boemska.json $SCRLOC/tmp/test/h54s.config
 rsync -avz --exclude .git/ --exclude .gitignore --del $SCRLOC/tmp/test/* \
-    $USERNAME@apps.boemskats.com:/pub/ht/builds/metanavigator
+    $USERNAME@$TESTSCPTARGET
 
 echo ---------------------------------------------------------------
 echo Create Zip folder
