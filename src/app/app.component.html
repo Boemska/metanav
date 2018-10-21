@@ -1,0 +1,37 @@
+<clr-main-container>
+  <clr-header>
+    <div class="branding">
+      <a href="#" [routerLink]="['/']" class="nav-link">
+        <span class="clr-icon header-logo"></span>
+        <span class="title">Meta Navigator</span>
+      </a>
+    </div>
+    <div class="header-actions">
+      <div class="nav-text">
+        <boemska-loading-indicator></boemska-loading-indicator>
+      </div>
+      <div class="dropdown">
+        <boemska-user-nav-dropdown></boemska-user-nav-dropdown>
+      </div>
+    </div>
+  </clr-header>
+
+  <boemska-alerts></boemska-alerts>
+
+  <div class="subnav smallScreen" [clr-nav-level]="1">
+      <app-sidenav></app-sidenav>
+  </div>
+
+  <div class="content-container">
+    <div class="content-area">
+      <router-outlet></router-outlet>
+    </div>
+
+    <div class="sidenav largeScreen">
+      <app-sidenav></app-sidenav>
+    </div>
+
+  </div>
+
+  <boemska-login></boemska-login>
+</clr-main-container>

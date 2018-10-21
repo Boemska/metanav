@@ -1,0 +1,27 @@
+.tbl {
+  margin-left: auto;
+  margin-right: auto;
+  width: 95%;
+}
+
+.clicked {
+  background: rgb(230, 230, 230);
+  font-weight: bold;
+}
+
+td:hover {
+  background-color: rgb(240, 240, 240);
+}
+
+.alignCenter {
+  text-align: center;
+}
+
+.spinner {
+  margin-top: 2rem;
+}
+
+.filter {
+  text-align: right;
+  margin-right: 30px;
+}

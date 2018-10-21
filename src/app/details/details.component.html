@@ -1,0 +1,131 @@
+<div class="viewType">
+  <clr-tabs>
+    <clr-tab>
+      <button clrTabLink (click)="setViewType('tb1_gr0')">Table View</button>
+      <clr-tab-content *clrIfActive="true"> </clr-tab-content>
+    </clr-tab>
+    <clr-tab>
+      <button clrTabLink (click)="setViewType('tb0_gr1'); disposeGraph(); setGraphSize(); drawGraph();">Network View</button>
+      <clr-tab-content *clrIfActive> </clr-tab-content>
+    </clr-tab>
+    <clr-tab>
+      <button clrTabLink (click)="setViewType('tb0_gr0'); disposeGraph(); setGraphSize(); drawGraph();">Table || Network</button>
+      <clr-tab-content *clrIfActive> </clr-tab-content>
+    </clr-tab>
+    <clr-tab>
+      <button clrTabLink (click)="setViewType('tb1_gr1'); disposeGraph(); setGraphSize(); drawGraph();">Table / Network</button>
+      <clr-tab-content *clrIfActive> </clr-tab-content>
+    </clr-tab>
+  </clr-tabs>
+</div>
+<div class={{viewType}} id="container">
+  <div *ngIf="isPageReady" id="divMain">
+    <div *ngFor="let historyItem of historyArray; let i = index;">
+      <!--  -->
+      <div *ngIf="historyItem.ASC">
+        <div class="assoc">
+          <div style="text-align: center; transform: rotate(180deg)">
+            <clr-icon shape="angle-double"></clr-icon>
+          </div>
+          <div class="alert alert-success assocSpaces">
+            <div class="alert-items">
+              <div class="alert-item static">
+                <span style="text-align: center" class="alert-text" style="text-align: center; margin: 0px;">
+                  <b>{{historyItem.ASC}}</b>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div style="text-align: center; transform: rotate(180deg)">
+            <clr-icon shape="angle-double"></clr-icon>
+          </div>
+        </div>
+      </div>
+      <!--  -->
+      <div>
+        <clr-stack-view>
+          <clr-stack-block [clrSbExpanded]="historyItem.EXPANDED">
+            <clr-stack-label style="text-align:left;">
+              <div class="headerStyle">
+                <span class="headerName">{{historyItem.NAME}}</span>
+                <span><a href="#{{historyItem.URL}}" target="_blank" class="headerLink">{{historyItem.OBJECT}}</a></span>
+              </div>
+              <div class="headerType">{{historyItem.TYPE}}</div>
+            </clr-stack-label>
+            <!--  -->
+            <clr-stack-block>
+              <clr-tabs>
+                <!--  -->
+                <clr-tab>
+                  <button style="margin-left: 10px" clrTabLink>Attributes and Properties</button>
+                  <clr-tab-content *clrIfActive="true">
+
+                    <clr-stack-content>
+                      <div class="tbl">
+                        <clr-datagrid>
+                          <clr-dg-column [clrDgField]="'TYPE'">TYPE</clr-dg-column>
+                          <clr-dg-column [clrDgField]="'NAME'">NAME</clr-dg-column>
+                          <clr-dg-column [clrDgField]="'VALUE'">VALUE</clr-dg-column>
+
+                          <clr-dg-row *clrDgItems="let atpr of detailArray[i].ATTRPROP">
+                            <clr-dg-cell>{{atpr.TYPE}}</clr-dg-cell>
+                            <clr-dg-cell>{{atpr.NAME}}</clr-dg-cell>
+                            <clr-dg-cell>{{atpr.VALUE}}</clr-dg-cell>
+                          </clr-dg-row>
+                          <clr-dg-footer>
+                            <clr-dg-pagination #pagination2 [clrDgPageSize]="20">
+                              {{pagination2.firstItem + 1}} - {{pagination2.lastItem + 1}} of {{pagination2.totalItems}} Attributes
+                            </clr-dg-pagination>
+                          </clr-dg-footer>
+                        </clr-datagrid>
+                      </div>
+                      <br>
+                    </clr-stack-content>
+                  </clr-tab-content>
+                </clr-tab>
+                <!--  -->
+                <clr-tab>
+                  <button clrTabLink>Associations</button>
+                  <clr-tab-content *clrIfActive>
+                    <clr-stack-content>
+                      <div class="tbl">
+                        <clr-datagrid>
+                          <clr-dg-column [clrDgField]="'ASSOC'">ASSOC</clr-dg-column>
+                          <clr-dg-column [clrDgField]="'ASSOCURI'">ASSOCURI</clr-dg-column>
+                          <clr-dg-column [clrDgField]="'NAME'">NAME</clr-dg-column>
+
+                          <clr-dg-row *clrDgItems="let assocData of detailArray[i].ASSOC; let selectedAssoc=index;" (click)="
+                                disposeGraph();
+                                removeHistoryAfter(i);
+                                updateAssociation(assocData.ASSOC, selectedAssoc, detailArray[i].ASSOC.length);
+
+                                goToDetails(assocData.ASSOCURI);
+                              " style="cursor: pointer;">
+
+                            <clr-dg-cell>{{assocData.ASSOC}}</clr-dg-cell>
+                            <clr-dg-cell>{{assocData.ASSOCURI}}</clr-dg-cell>
+                            <clr-dg-cell>{{assocData.NAME}}</clr-dg-cell>
+
+                          </clr-dg-row>
+                          <clr-dg-footer>
+                            <clr-dg-pagination #pagination1 [clrDgPageSize]="20">
+                              {{pagination1.firstItem + 1}} - {{pagination1.lastItem + 1}} of {{pagination1.totalItems}} Associations
+                            </clr-dg-pagination>
+                          </clr-dg-footer>
+                        </clr-datagrid>
+                      </div>
+                      <br>
+                    </clr-stack-content>
+                  </clr-tab-content>
+                </clr-tab>
+                <!--  -->
+              </clr-tabs>
+            </clr-stack-block>
+
+          </clr-stack-block>
+        </clr-stack-view>
+      </div>
+    </div>
+  </div>
+  <div #graphic id="graphic"></div>
+</div>

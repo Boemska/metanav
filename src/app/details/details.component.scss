@@ -1,0 +1,149 @@
+.viewType {
+  position: fixed;
+  top: 60px;
+  width: calc(100% - 265px);
+  z-index: 111;
+  left: 250px;
+  background: #fafafa;
+  padding-left: 5px;
+}
+
+.tb0_gr0 {
+  div#container {
+    width: 100%;
+  }
+  div#divMain {
+    padding-top: 35px;
+    float: left;
+    width: 50%;
+    height: 100%;
+  }
+  div#graphic {
+    position: fixed;
+    left: calc( 50% + 130px);
+    width: 50%;
+    height: 100%;
+  }
+}
+
+.tb0_gr1 {
+  div#container {
+    width: 100%;
+  }
+  div#divMain {
+    display: none;
+  }
+  div#graphic {
+    float: left;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.tb1_gr0 {
+  div#container {
+    width: 100%;
+  }
+  div#divMain {
+    padding-top: 35px;
+    float: left;
+    width: 100%;
+    height: 100%;
+  }
+  div#graphic {
+    display: none;
+  }
+}
+
+.tb1_gr1 {
+  div#container {
+    width: 100%;
+  }
+  div#divMain {
+    padding-top: 35px;
+    float: left;
+    width: 100%;
+  }
+  div#graphic {
+    float: left;
+    width: 100%;
+    height: 40%;
+  }
+}
+
+.tbl {
+  margin-left: auto;
+  margin-right: auto;
+  width: 95%;
+}
+
+.clicked {
+  background: rgb(230, 230, 230);
+  font-weight: bold;
+}
+
+td:hover {
+  background-color: rgb(240, 240, 240);
+}
+
+.alignCenter {
+  text-align: center;
+}
+
+.spinner {
+  margin-top: 2rem;
+}
+
+.assocSpaces {
+  margin-top: 0px;
+}
+
+.tableName {
+  text-align: left;
+  margin-left: 40px;
+}
+
+.assoc {
+  width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.headerName {
+  text-align: left;
+  font-size: 26px;
+  text-transform: lowercase;
+  font-weight: bolder;
+  color: #cd5c5c;
+  letter-spacing: -2px;
+}
+
+.headerType {
+  text-align: left;
+  font-weight: lighter;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #cd5c5c;
+  padding-left: 20px;
+}
+
+.headerLink {
+  text-align: right;
+  padding-right: 10px;
+  font-weight: lighter;
+  font-size: 14px;
+  color: #cd5c5c;
+}
+
+.headerStyle {
+  display: flex;
+  justify-content: space-between;
+}
+
+a {
+  text-decoration: none !important;
+}
+
+a:hover {
+  text-decoration: underline !important;
+}

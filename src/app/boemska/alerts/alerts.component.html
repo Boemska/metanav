@@ -1,0 +1,10 @@
+<clr-alerts *ngIf="hasOpenAlert">
+  <clr-alert *ngFor="let alert of alerts" [clrAlertType]="alert.type" [clrAlertAppLevel]="true"
+    [(clrAlertClosed)]="alert.closed" (clrAlertClosedChange)="onAlertClose()">
+    <div class="alert-item">
+      <span class="alert-text">
+        {{alert.message}}
+      </span>
+    </div>
+  </clr-alert>
+</clr-alerts>

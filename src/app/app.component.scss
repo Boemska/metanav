@@ -1,0 +1,28 @@
+// Copyright (c) 2016 VMware, Inc. All Rights Reserved.
+// This software is released under MIT license.
+// The full license information can be found in LICENSE in the root directory of this project.
+.clr-icon {
+  &.header-logo {
+    background-image: url(../images/boemska_logo.png);
+    width: 24px;
+    height: 24px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .largeScreen {
+    display: none;
+  }
+
+  .branding {
+    display: none;
+  }
+
+}
+
+@media screen and (min-width: 769px) {
+  .smallScreen {
+    display: none;
+  }
+
+}

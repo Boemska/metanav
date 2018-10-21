@@ -1,0 +1,75 @@
+/* You can add global styles to this file, and also import other style files */
+
+.d-none {
+  display: none !important;
+}
+
+.d-block {
+  display: block !important;
+}
+
+.main-container .content-container .sidenav {
+  overflow-y: auto;
+  max-height: calc(100vh - 60px);
+  width: 250px;
+}
+
+.stack-view {
+  border: 1px solid #ffa500 !important;
+  border: radius 5px;
+  text-align: center;
+}
+
+.stack-view .stack-block-label {
+  flex: 0 0 100%;
+  max-width: 100%;
+  background-color: #ffe4c4;
+
+}
+
+.stack-view .stack-block-expanded>.stack-block-label {
+  flex: 0 0 100%;
+  max-width: 100%;
+  background-color: #ffe4c4;
+}
+
+.stack-view .stack-block-content {
+  width: 90%;
+  padding: 0px;
+}
+
+@media (min-width: 769px) {
+  .d-md-none {
+    display: none !important;
+  }
+  .d-md-inline {
+    display: inline !important;
+  }
+  .d-md-inline-block {
+    display: inline-block !important;
+  }
+  .d-md-block {
+    display: block !important;
+  }
+  .d-md-table {
+    display: table !important;
+  }
+  .d-md-table-cell {
+    display: table-cell !important;
+  }
+  .d-md-flex {
+    display: -ms-flexbox !important;
+    display: flex !important;
+  }
+  .d-md-inline-flex {
+    display: -ms-inline-flexbox !important;
+    display: inline-flex !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .subnav {
+    overflow-y: auto;
+  }
+
+}

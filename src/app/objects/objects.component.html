@@ -1,0 +1,41 @@
+<div *ngIf="!isPageReady" class="spinnerSettings alignCenter">
+  <br>
+  <span class="spinner spinner-lg">
+    Loading...
+  </span>
+</div>
+<div *ngIf="isPageReady">
+  <div>
+    <h3>
+      <b>Objects</b> for
+      <b>sasType: </b>
+      <i>{{sasType}}</i>
+    </h3>
+  </div>
+  <!-- filter for objects -->
+  <div class="form-group filter">
+    <clr-icon shape="search" size="25"></clr-icon>
+    <input type="text" placeholder="Filter by ObjectName" size="25" #filter (keyup)="onFilterInput(filter.value)" />
+    <button aria-label="Close" class="close" type="button" (click)="clearFilter(); filter.value='';">
+      <clr-icon aria-hidden="true" shape="close" size="20"></clr-icon>
+    </button>
+  </div>
+  <!--  -->
+  <div class="tbl">
+    <clr-datagrid>
+      <clr-dg-column [clrDgField]="'ID'">ID</clr-dg-column>
+      <clr-dg-column [clrDgField]="'NAME'">NAME</clr-dg-column>
+
+      <clr-dg-row *clrDgItems="let object of sasObjects; let i=index;" (click)="goToObject(object.ID, i)" [class.clicked]="i===selectedRow"
+        style="cursor: pointer;">
+        <clr-dg-cell>{{object.ID}}</clr-dg-cell>
+        <clr-dg-cell>{{object.NAME}}</clr-dg-cell>
+      </clr-dg-row>
+      <clr-dg-footer>
+        <clr-dg-pagination #pagination [clrDgPageSize]="20">
+          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}} of {{pagination.totalItems}} object
+        </clr-dg-pagination>
+      </clr-dg-footer>
+    </clr-datagrid>
+  </div>
+</div>
