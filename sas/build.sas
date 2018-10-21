@@ -200,14 +200,14 @@ data _null_;
 run;
 
 /* create the config file for web frontend */
-/*
+
 data _null_;
-  file "&build_dir/h54sConfig.json";
+  file "&build_dir/h54sConfig_boemska.json";
   string='{"metadataRoot":"'!!"&deploy_dir/deploy"!!'/UserNavigator",'
     !!'"metadataRootLocator":"'!!"&uid"!!'"}';
   put string;
 run;
-*/
+
 data _null_;
   file "&build_dir/h54sConfig.json";
   put '{'/
@@ -215,6 +215,7 @@ data _null_;
       '  "appId":"' "&uid" '"'/
       '}';
 run;
+
 
 /* show log */
 proc printto log=log;
