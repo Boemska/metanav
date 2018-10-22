@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { VERSION } from 'environments/version';
 
 @Component({
   selector: 'my-app',
@@ -6,8 +7,10 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 
-export class AppComponent implements OnInit {
+export class AppComponent {
+
+  public version = VERSION.version;
+  public hashPart = VERSION.hash;
 
   constructor() { }
-  ngOnInit() { }
 }

@@ -1,0 +1,11 @@
+coverage/
+dist/
+html-report/
+node_modules/
+package-lock.json
+.vscode/
+.idea/
+typings/
+.DS_Store
+**/*npm-debug.log.*
+**/*yarn-error.log.*

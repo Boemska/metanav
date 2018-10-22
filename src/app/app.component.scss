@@ -8,6 +8,17 @@
     height: 24px;
   }
 }
+.version {
+  display: flex;
+  height: 1rem;
+  position: fixed;
+  bottom: 0;
+  right: 1rem;
+}
+
+.contentMarginBottom {
+  margin-bottom: 1rem;
+}
 
 @media screen and (max-width: 768px) {
   .largeScreen {

@@ -9,7 +9,8 @@
     "test": "ng test --single-run",
     "watch": "ng test --single-run=false watch=true",
     "pree2e": "webdriver-manager update",
-    "e2e": "protractor protractor.config.js"
+    "e2e": "protractor protractor.config.js",
+    "postinstall": "node ./src/version.ts"
   },
   "private": true,
   "dependencies": {
@@ -31,6 +32,7 @@
     "clarity-ui": "^0.10.23",
     "core-js": "^2.5.3",
     "d3": "^3.5.17",
+    "git-describe": "^4.0.3",
     "h54s": "git+https://github.com/Boemska/h54s.git#development",
     "http-proxy-agent": "^2.1.0",
     "https-proxy-agent": "^2.2.1",

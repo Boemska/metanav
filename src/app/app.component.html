@@ -19,12 +19,15 @@
   <boemska-alerts></boemska-alerts>
 
   <div class="subnav smallScreen" [clr-nav-level]="1">
-      <app-sidenav></app-sidenav>
+    <app-sidenav></app-sidenav>
   </div>
 
-  <div class="content-container">
+  <div class="content-container contentMarginBottom">
     <div class="content-area">
       <router-outlet></router-outlet>
+      <div class="version">
+        <span>Version: {{version}}.{{hashPart}}</span>
+      </div>
     </div>
 
     <div class="sidenav largeScreen">

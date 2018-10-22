@@ -57,8 +57,46 @@
               <clr-tabs>
                 <!--  -->
                 <clr-tab>
-                  <button style="margin-left: 10px" clrTabLink>Attributes and Properties</button>
+                  <button style="margin-left: 10px" clrTabLink>Associations</button>
                   <clr-tab-content *clrIfActive="true">
+                    <clr-stack-content>
+                      <div class="tbl">
+                        <clr-datagrid>
+                          <clr-dg-column [clrDgField]="'ASSOC'">ASSOC</clr-dg-column>
+                          <clr-dg-column [clrDgField]="'ASSOCURI'">ASSOCURI</clr-dg-column>
+                          <clr-dg-column [clrDgField]="'NAME'">NAME</clr-dg-column>
+
+                          <clr-dg-row *clrDgItems="let assocData of detailArray[i].ASSOC; let selectedAssoc=index;"
+                            (click)="
+                                disposeGraph();
+                                removeHistoryAfter(i);
+                                updateAssociation(assocData.ASSOC, selectedAssoc, detailArray[i].ASSOC.length);
+
+                                goToDetails(assocData.ASSOCURI);
+                              "
+                            style="cursor: pointer;">
+
+                            <clr-dg-cell>{{assocData.ASSOC}}</clr-dg-cell>
+                            <clr-dg-cell>{{assocData.ASSOCURI}}</clr-dg-cell>
+                            <clr-dg-cell>{{assocData.NAME}}</clr-dg-cell>
+
+                          </clr-dg-row>
+                          <clr-dg-footer>
+                            <clr-dg-pagination #pagination1 [clrDgPageSize]="20">
+                              {{pagination1.firstItem + 1}} - {{pagination1.lastItem + 1}} of
+                              {{pagination1.totalItems}} Associations
+                            </clr-dg-pagination>
+                          </clr-dg-footer>
+                        </clr-datagrid>
+                      </div>
+                      <br>
+                    </clr-stack-content>
+                  </clr-tab-content>
+                </clr-tab>
+                <!--  -->
+                <clr-tab>
+                  <button clrTabLink>Attributes and Properties</button>
+                  <clr-tab-content *clrIfActive>
 
                     <clr-stack-content>
                       <div class="tbl">
@@ -74,7 +112,8 @@
                           </clr-dg-row>
                           <clr-dg-footer>
                             <clr-dg-pagination #pagination2 [clrDgPageSize]="20">
-                              {{pagination2.firstItem + 1}} - {{pagination2.lastItem + 1}} of {{pagination2.totalItems}} Attributes
+                              {{pagination2.firstItem + 1}} - {{pagination2.lastItem + 1}} of
+                              {{pagination2.totalItems}} Attributes
                             </clr-dg-pagination>
                           </clr-dg-footer>
                         </clr-datagrid>
@@ -83,41 +122,7 @@
                     </clr-stack-content>
                   </clr-tab-content>
                 </clr-tab>
-                <!--  -->
-                <clr-tab>
-                  <button clrTabLink>Associations</button>
-                  <clr-tab-content *clrIfActive>
-                    <clr-stack-content>
-                      <div class="tbl">
-                        <clr-datagrid>
-                          <clr-dg-column [clrDgField]="'ASSOC'">ASSOC</clr-dg-column>
-                          <clr-dg-column [clrDgField]="'ASSOCURI'">ASSOCURI</clr-dg-column>
-                          <clr-dg-column [clrDgField]="'NAME'">NAME</clr-dg-column>
 
-                          <clr-dg-row *clrDgItems="let assocData of detailArray[i].ASSOC; let selectedAssoc=index;" (click)="
-                                disposeGraph();
-                                removeHistoryAfter(i);
-                                updateAssociation(assocData.ASSOC, selectedAssoc, detailArray[i].ASSOC.length);
-
-                                goToDetails(assocData.ASSOCURI);
-                              " style="cursor: pointer;">
-
-                            <clr-dg-cell>{{assocData.ASSOC}}</clr-dg-cell>
-                            <clr-dg-cell>{{assocData.ASSOCURI}}</clr-dg-cell>
-                            <clr-dg-cell>{{assocData.NAME}}</clr-dg-cell>
-
-                          </clr-dg-row>
-                          <clr-dg-footer>
-                            <clr-dg-pagination #pagination1 [clrDgPageSize]="20">
-                              {{pagination1.firstItem + 1}} - {{pagination1.lastItem + 1}} of {{pagination1.totalItems}} Associations
-                            </clr-dg-pagination>
-                          </clr-dg-footer>
-                        </clr-datagrid>
-                      </div>
-                      <br>
-                    </clr-stack-content>
-                  </clr-tab-content>
-                </clr-tab>
                 <!--  -->
               </clr-tabs>
             </clr-stack-block>
