@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, AfterViewInit } from '@angular/core';
 import { MetanavService } from '../metanav.service';
 import { Subscription } from 'rxjs';
 import { Router, Params, NavigationEnd } from '@angular/router';
@@ -9,7 +9,7 @@ import * as d3 from 'd3';
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.scss']
 })
-export class DetailsComponent implements OnInit, OnDestroy {
+export class DetailsComponent implements AfterViewInit, OnDestroy {
 
   // tables
   public detailArray: Array<any> = [{ ASSOC: '', ATTRPROP: '' }];
@@ -22,20 +22,18 @@ export class DetailsComponent implements OnInit, OnDestroy {
   public detailsName: string;
   public nextAssoc: string;
   public collAssoc: Array<any> = [];
-  public viewType: string = 'tb1_gr0';
+  public viewType: string = 'tb1_ch0';
   private _firstStart: boolean = true;
   private _linkDetailsSub: Subscription;
 
   // d3js
   public dataset: any = { nodes: [], edges: [] };
-  public svgContainer: any;
+  public svg: any;
   public nodes: any;
   public edges: any;
   public nodelabels: any;
   public force: any;
   public backToExistingNode: boolean = false;
-  public graphHeight: number;
-  public graphWidth: number;
   private _indexInNodesArray: number;
   private _indexOfClickedAssoc: number;
   private _numberOfAssoc: number; // number of elements in association table
@@ -54,7 +52,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
     private _router: Router
   ) { }
 
-  public async ngOnInit() {
+  public async ngAfterViewInit() {
     if (this._firstStart) {
       this.url = window.location.href.split('#').pop();
       await this._loadData();
@@ -69,6 +67,17 @@ export class DetailsComponent implements OnInit, OnDestroy {
           this.drawGraph();
         }
       });
+
+  }
+  public reDrawGraph() {
+    setTimeout(() => {
+      this.onResize();
+    }, 500);
+  }
+
+  public onResize(event?) {
+    this.disposeGraph();
+    this.drawGraph();
   }
 
   public removeHistoryAfter(i: number) {
@@ -96,23 +105,11 @@ export class DetailsComponent implements OnInit, OnDestroy {
     if (this.force) {
       this.force.stop();
     }
-    document.getElementById('graphic').innerHTML = '';
+    document.getElementById('chart').innerHTML = '';
   }
 
   public setViewType(viewType: string) {
     this.viewType = viewType;
-  }
-
-  public setGraphSize() {
-
-    let width = window.innerWidth;
-    let height = window.innerHeight;
-    if (this.viewType === 'tb0_gr0') {
-      this.graphWidth = (width - 300) * 0.5;
-    } else {
-      this.graphWidth = width - 300;
-    }
-    this.graphHeight = height - 200;
   }
 
   private _getValueByName(data: any): string {
@@ -134,15 +131,13 @@ export class DetailsComponent implements OnInit, OnDestroy {
     d3Item.clickable = false;
   }
 
-
   private _pushCollapsedAssociations(assocArr: any, parentNode: any, nodeIndex: number) {
 
+    // small circles - associations
     this._parentNode = parentNode;
     if (!this._subAssocParent) {
       this._subAssocParent = this.dataset.nodes.length;
     }
-
-    let indSource = nodeIndex;
 
     for (let i = 0; i < assocArr.groupAssoc.length; i++) {
       const e = assocArr.groupAssoc[i];
@@ -155,14 +150,15 @@ export class DetailsComponent implements OnInit, OnDestroy {
         indexAssoc: i,
         clickable: true,
         numbOfAssoc: assocArr.groupAssoc.length,
-        parentNode: this.dataset.nodes[indSource]
+        color: this._colorizeMe(e.NAME),
+        parentNode: this.dataset.nodes[nodeIndex]
       };
 
       this.dataset.nodes.push(subAssociation);
 
       // connect association to parent CollAssoc
       this.dataset.edges.push({
-        source: this.dataset.nodes[indSource],
+        source: this.dataset.nodes[nodeIndex],
         target: subAssociation
       });
     }
@@ -215,12 +211,20 @@ export class DetailsComponent implements OnInit, OnDestroy {
     });
   }
 
+  private _colorizeMe(inputString) {
+    return this._metanavService.colourHash(inputString);
+  }
+
+  private _lastInHistArr() {
+    return this.historyArray[this.historyArray.length - 1];
+  }
+
   private _removeSubAssociaction(index: number) {
     this.dataset.edges = this.dataset.edges.filter(e => !(e.source === this.dataset.nodes[index] || e.target === this.dataset.nodes[index]));
     this.dataset.nodes.splice(index, 1);
   }
 
-  private _graphClick(d: any, nodeType: any) {
+  private _chaphClick(d: any, nodeType: any) {
     if (nodeType === this._subAssocType) {
       this.disposeGraph();
       this._removeSubAssociaction(d.index);
@@ -255,15 +259,16 @@ export class DetailsComponent implements OnInit, OnDestroy {
 
     // newNode
     this.dataset.nodes.push({
-      name: this.historyArray[this.historyArray.length - 1].NAME,
+      name: this._lastInHistArr().NAME,
       nodeType: this._objectType,
       state: this._stateNew,
+      color: this._colorizeMe(this._lastInHistArr().TYPE),
       parentNode: this.dataset.nodes[this._sourceNode]
     });
 
     // nodeCollection
     this._nodeCollection.push({
-      id: this._metanavService.getLastValueFromString(this.historyArray[this.historyArray.length - 1].OBJECT),
+      id: this._metanavService.getLastValueFromString(this._lastInHistArr().OBJECT),
       index: this.dataset.nodes.length - 1
     });
 
@@ -285,6 +290,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
         assocArry: this.collAssoc[i],
         clickable: true,
         numbOfAssoc: this.collAssoc.length,
+        color: this._colorizeMe(nodeName),
         parentNode: this.dataset.nodes[this._indexInNodesArray]
       });
 
@@ -325,6 +331,11 @@ export class DetailsComponent implements OnInit, OnDestroy {
       };
       this.historyArray.push(this.historyObj);
 
+      setTimeout(() => {
+        let height = document.getElementById('content-area').scrollHeight;
+        document.getElementsByClassName('content-area')[0].scrollTo(0, height);
+      }, 500);
+
       if (!this.backToExistingNode) {
         this._addToNodes(this._indexOfClickedAssoc);
       } else {
@@ -335,25 +346,26 @@ export class DetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  public async drawGraph() {
+  public drawGraph() {
 
-    await this.setGraphSize();
+    let chartDiv = document.getElementById('chart');
 
-    let w = this.graphWidth;
-    let h = this.graphHeight;
+    let w = chartDiv.clientWidth;
+    let h = chartDiv.clientHeight;
 
-    let nodesDistance = 100;
-    let colors = d3.scale.category10();
-    let nodes = this.dataset.nodes;
-    let edges = this.dataset.edges;
-
-    this.svgContainer = d3
-      .select('#graphic')
+    this.svg = d3
+      .select(chartDiv)
       .append('svg')
       .attr('width', w)
       .attr('height', h);
 
-    this.force = d3.layout.force()
+    let nodesDistance = 100;
+
+    let nodes = this.dataset.nodes;
+    let edges = this.dataset.edges;
+
+    this.force = d3.layout
+      .force()
       .size([w, h])
       .nodes(nodes)
       .links(edges)
@@ -361,7 +373,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
       .charge(-1000)
       .start();
 
-    this.nodes = this.svgContainer
+    this.nodes = this.svg
       .selectAll('circle' || 'rect')
       .data(nodes)
       .enter()
@@ -376,7 +388,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
             this._collAssocType : this._subAssocType,
       });
 
-    this.edges = this.svgContainer.selectAll('line')
+    this.edges = this.svg.selectAll('line')
       .data(edges)
       .enter()
       .append('line')
@@ -384,7 +396,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
       .style('stroke', '#ccc')
       .style('pointer-events', 'none');
 
-    this.nodelabels = this.svgContainer
+    this.nodelabels = this.svg
       .selectAll('nodelabelNew' || 'nodelabelOld')
       .data(nodes)
       .enter()
@@ -394,71 +406,71 @@ export class DetailsComponent implements OnInit, OnDestroy {
       .attr('class', d => d.state === this._stateNew ? 'nodelabelNew' : 'nodelabelOld')
       .text(d => d.name);
 
-    this.svgContainer
+    this.svg
       .selectAll('.' + this._stateOld)
       .transition()
-      .style("opacity", 0.15);
+      .style("opacity", 0.5);
 
     // Objects (Big circle)
-    this.svgContainer
+    this.svg
       .selectAll('.' + this._objectType)
       .append('circle')
       .attr('class', 'circle')
       .attr('r', 25)
-      .style('fill', (d, i) => colors(i));
+      .style('fill', d => d.color);
 
     // Collapsed Associations (RECT)
-    this.svgContainer
+    this.svg
       .selectAll('.' + this._collAssocType)
       .append('rect')
       .attr('height', 25)
       .attr('width', 25)
       .attr('class', 'rect')
-      .style('fill', (d, i) => colors(i))
+      .style('fill', d => d.color)
       .on('click', d => {
         if (d.clickable) {
-          this._graphClick(d, d.nodeType);
+          this._chaphClick(d, d.nodeType);
         }
       })
       .style('cursor', 'pointer');
 
     // Sub Association (small circle)
-    this.svgContainer
+    this.svg
       .selectAll('.' + this._subAssocType)
       .append('circle')
       .attr('class', 'circle')
       .attr('r', 10)
-      .style('fill', (d, i) => colors(i))
+      .style('fill', d => d.color)
       .on('click', d => {
         if (d.clickable) {
-          this._graphClick(d, d.nodeType);
+          this._chaphClick(d, d.nodeType);
         }
       })
       .style('cursor', 'pointer');
 
-    this.svgContainer
+    this.svg
       .selectAll('.nodelabelNew')
       .attr('stroke', 'black')
       .text(d => d.name)
       .on('click', d => {
         if (d.clickable) {
-          this._graphClick(d, d.nodeType);
+          this._chaphClick(d, d.nodeType);
         }
       })
       .style('cursor', 'pointer');
 
-    this.svgContainer
+    this.svg
       .selectAll('.nodelabelOld')
       .attr('stroke', 'lightgray')
       .text(d => d.name)
       .on('click', d => {
         if (d.clickable) {
-          this._graphClick(d, d.nodeType);
+          this._chaphClick(d, d.nodeType);
         }
       })
       .style('cursor', 'pointer');
 
-    this.svgContainer
+    this.svg
       .append('defs')
       .append('marker')
       .attr('id', 'arrowhead')
@@ -489,6 +501,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
         .attr('y', d => d.y);
     });
     this.nodes.call(this.force.drag);
+
   }
 
   public ngOnDestroy() {

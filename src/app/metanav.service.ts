@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AdapterService } from './boemska/adapter.service';
+import * as ColorHash from 'color-hash';
 
 @Injectable()
 export class MetanavService {
@@ -72,6 +73,11 @@ export class MetanavService {
     let currentUrl = window.location.hash;
     let arr: Array<string> = currentUrl.split("/");
     return arr[2];
+  }
+
+  public colourHash(inputString: string): string {
+    let clHash = new ColorHash();
+    return clHash.hex(inputString);
   }
 
 }
