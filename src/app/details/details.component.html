@@ -1,24 +1,25 @@
-<div class="viewType">
-  <clr-tabs>
-    <clr-tab>
-      <button clrTabLink (click)="setViewType('tb1_gr0')">Table View</button>
-      <clr-tab-content *clrIfActive="true"> </clr-tab-content>
-    </clr-tab>
-    <clr-tab>
-      <button clrTabLink (click)="setViewType('tb0_gr1'); disposeGraph(); setGraphSize(); drawGraph();">Network View</button>
-      <clr-tab-content *clrIfActive> </clr-tab-content>
-    </clr-tab>
-    <clr-tab>
-      <button clrTabLink (click)="setViewType('tb0_gr0'); disposeGraph(); setGraphSize(); drawGraph();">Table || Network</button>
-      <clr-tab-content *clrIfActive> </clr-tab-content>
-    </clr-tab>
-    <clr-tab>
-      <button clrTabLink (click)="setViewType('tb1_gr1'); disposeGraph(); setGraphSize(); drawGraph();">Table / Network</button>
-      <clr-tab-content *clrIfActive> </clr-tab-content>
-    </clr-tab>
-  </clr-tabs>
-</div>
 <div class={{viewType}} id="container">
+  <div class="viewType">
+    <clr-tabs>
+      <clr-tab>
+        <button clrTabLink (click)="setViewType('tb1_ch0')" (click)="reDrawGraph()">Table View</button>
+        <clr-tab-content *clrIfActive="true"> </clr-tab-content>
+      </clr-tab>
+      <clr-tab>
+        <button clrTabLink (click)="setViewType('tb0_ch1')" (click)="reDrawGraph()">Network View</button>
+        <clr-tab-content *clrIfActive> </clr-tab-content>
+      </clr-tab>
+      <clr-tab>
+        <button clrTabLink (click)="setViewType('tb0_ch0')" (click)="reDrawGraph()">Table ||
+          Network</button>
+        <clr-tab-content *clrIfActive> </clr-tab-content>
+      </clr-tab>
+      <clr-tab>
+        <button clrTabLink (click)="setViewType('tb1_ch1')" (click)="reDrawGraph()">Table / Network</button>
+        <clr-tab-content *clrIfActive> </clr-tab-content>
+      </clr-tab>
+    </clr-tabs>
+  </div>
   <div *ngIf="isPageReady" id="divMain">
     <div *ngFor="let historyItem of historyArray; let i = index;">
       <!--  -->
@@ -71,7 +72,6 @@
                                 disposeGraph();
                                 removeHistoryAfter(i);
                                 updateAssociation(assocData.ASSOC, selectedAssoc, detailArray[i].ASSOC.length);
-
                                 goToDetails(assocData.ASSOCURI);
                               "
                             style="cursor: pointer;">
@@ -82,7 +82,7 @@
 
                           </clr-dg-row>
                           <clr-dg-footer>
-                            <clr-dg-pagination #pagination1 [clrDgPageSize]="20">
+                            <clr-dg-pagination #pagination1 [clrDgPageSize]="15">
                               {{pagination1.firstItem + 1}} - {{pagination1.lastItem + 1}} of
                               {{pagination1.totalItems}} Associations
                             </clr-dg-pagination>
@@ -111,7 +111,7 @@
                             <clr-dg-cell>{{atpr.VALUE}}</clr-dg-cell>
                           </clr-dg-row>
                           <clr-dg-footer>
-                            <clr-dg-pagination #pagination2 [clrDgPageSize]="20">
+                            <clr-dg-pagination #pagination2 [clrDgPageSize]="15">
                               {{pagination2.firstItem + 1}} - {{pagination2.lastItem + 1}} of
                               {{pagination2.totalItems}} Attributes
                             </clr-dg-pagination>
@@ -132,5 +132,5 @@
       </div>
     </div>
   </div>
-  <div #graphic id="graphic"></div>
+  <div (window:resize)="onResize($event)" id="chart"></div>
 </div>

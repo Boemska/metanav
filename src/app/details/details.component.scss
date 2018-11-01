@@ -1,73 +1,142 @@
-.viewType {
-  position: fixed;
-  top: 60px;
-  width: calc(100% - 265px);
-  z-index: 111;
-  left: 250px;
-  background: #fafafa;
-  padding-left: 5px;
+@media screen and (min-width: 769px) {
+  .viewType {
+    display: flex;
+    justify-content: center;
+    top: 60px;
+    z-index: 111;
+    left: 250px;
+  } // table view
+  .tb1_ch0 {
+    #divMain {
+      position: fixed;
+      top: 145px;
+      left: 270px;
+      right: 20px;
+      bottom: 25px;
+      overflow-y: auto;
+    }
+    #chart {
+      display: none;
+    }
+  } // network view
+  .tb0_ch1 {
+    #divMain {
+      display: none;
+    }
+    #chart {
+      position: fixed;
+      left: 255px;
+      top: 145px;
+      right: 5px;
+      bottom: 25px;
+    }
+  } // table||network
+  .tb0_ch0 {
+    #divMain {
+      position: fixed;
+      top: 145px;
+      left: 270px;
+      right: calc(50% - 130px);
+      bottom: 25px;
+      overflow-y: auto;
+    }
+    #chart {
+      position: fixed;
+      left: calc(50% + 140px);
+      top: 145px;
+      right: 20px;
+      bottom: 25px;
+      border: 1px solid #ffa500;
+    }
+  } // table/network
+  .tb1_ch1 {
+    #divMain {
+      position: relative;
+      margin-left: -4px;
+      margin-right: -4px;
+      top: 25px;
+      height: 50vh;
+      overflow-y: auto;
+    }
+    #chart {
+      position: fixed;
+      left: 270px;
+      right: 20px;
+      top: calc(50vh + 160px);
+      bottom: 25px;
+      border: 1px solid #ffa500;
+    }
+  }
 }
 
-.tb0_gr0 {
-  div#container {
-    width: 100%;
-  }
-  div#divMain {
-    padding-top: 35px;
-    float: left;
-    width: 50%;
-    height: 100%;
-  }
-  div#graphic {
-    position: fixed;
-    left: calc( 50% + 130px);
-    width: 50%;
-    height: 100%;
-  }
-}
-
-.tb0_gr1 {
-  div#container {
-    width: 100%;
-  }
-  div#divMain {
-    display: none;
-  }
-  div#graphic {
-    float: left;
-    width: 100%;
-    height: 100%;
-  }
-}
-
-.tb1_gr0 {
-  div#container {
-    width: 100%;
-  }
-  div#divMain {
-    padding-top: 35px;
-    float: left;
-    width: 100%;
-    height: 100%;
-  }
-  div#graphic {
-    display: none;
-  }
-}
-
-.tb1_gr1 {
-  div#container {
-    width: 100%;
-  }
-  div#divMain {
-    padding-top: 35px;
-    float: left;
-    width: 100%;
-  }
-  div#graphic {
-    float: left;
-    width: 100%;
-    height: 40%;
+@media screen and (max-width: 768px) {
+  .viewType {
+    display: flex;
+    justify-content: center;
+    top: 60px;
+    z-index: 111;
+    left: 20px;
+  } // table view
+  .tb1_ch0 {
+    #divMain {
+      position: fixed;
+      top: 145px;
+      left: 20px;
+      right: 20px;
+      bottom: 25px;
+      overflow-y: auto;
+    }
+    #chart {
+      display: none;
+    }
+  } // network view
+  .tb0_ch1 {
+    #divMain {
+      display: none;
+    }
+    #chart {
+      position: fixed;
+      left: 20px;
+      top: 145px;
+      right: 20px;
+      bottom: 25px;
+    }
+  } // table||network
+  .tb0_ch0 {
+    #divMain {
+      position: fixed;
+      top: 145px;
+      left: 20px;
+      right: calc(50% - 15px);
+      bottom: 25px;
+      overflow-y: auto;
+    }
+    #chart {
+      position: fixed;
+      left: calc(50% + 25px);
+      top: 145px;
+      right: 20px;
+      bottom: 25px;
+      border: 1px solid #ffa500;
+    }
+  } // table/network
+  .tb1_ch1 {
+    #divMain {
+      position: relative;
+      margin-left: -4px;
+      margin-right: -4px;
+      top: 25px;
+      max-height: 50vh;
+      overflow-y: auto;
+    }
+    #chart {
+      position: fixed;
+      left: 20px;
+      right: 20px;
+      top: calc(50vh + 160px);
+      bottom: 25px;
+      border: 1px solid #ffa500;
+    }
   }
 }
 

@@ -26,8 +26,8 @@
       <clr-dg-column [clrDgField]="'ID'">ID</clr-dg-column>
       <clr-dg-column [clrDgField]="'NAME'">NAME</clr-dg-column>
 
-      <clr-dg-row *clrDgItems="let object of sasObjects; let i=index;" (click)="goToObject(object.ID, i)" [class.clicked]="i===selectedRow"
-        style="cursor: pointer;">
+      <clr-dg-row *clrDgItems="let object of sasObjects; let i=index;" (click)="goToObject(object.ID, i)"
+        [class.clicked]="i===selectedRow" style="cursor: pointer;">
         <clr-dg-cell>{{object.ID}}</clr-dg-cell>
         <clr-dg-cell>{{object.NAME}}</clr-dg-cell>
       </clr-dg-row>

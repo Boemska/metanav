@@ -25,15 +25,13 @@
     display: none;
   }
 
-  .branding {
-    display: none;
+  .branding{
+    z-index: 1 !important;
   }
-
 }
 
 @media screen and (min-width: 769px) {
   .smallScreen {
     display: none;
   }
-
 }
