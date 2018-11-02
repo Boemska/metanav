@@ -67,12 +67,12 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
           this.drawGraph();
         }
       });
-
   }
+
   public reDrawGraph() {
     setTimeout(() => {
       this.onResize();
-    }, 500);
+    }, 0);
   }
 
   public onResize(event?) {
@@ -224,7 +224,7 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
     this.dataset.nodes.splice(index, 1);
   }
 
-  private _chaphClick(d: any, nodeType: any) {
+  private _chartClick(d: any, nodeType: any) {
     if (nodeType === this._subAssocType) {
       this.disposeGraph();
       this._removeSubAssociaction(d.index);
@@ -332,9 +332,9 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
       this.historyArray.push(this.historyObj);
 
       setTimeout(() => {
-        let height = document.getElementById('content-area').scrollHeight;
-        document.getElementsByClassName('content-area')[0].scrollTo(0, height);
-      }, 500);
+        let height = document.getElementById('divMain').scrollHeight;
+        document.getElementById('divMain').scrollTo(0, height);
+      }, 0);
 
       if (!this.backToExistingNode) {
         this._addToNodes(this._indexOfClickedAssoc);
@@ -388,7 +388,8 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
             this._collAssocType : this._subAssocType,
       });
 
-    this.edges = this.svg.selectAll('line')
+    this.edges = this.svg
+      .selectAll('line')
       .data(edges)
       .enter()
       .append('line')
@@ -429,7 +430,7 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
       .style('fill', d => d.color)
       .on('click', d => {
         if (d.clickable) {
-          this._chaphClick(d, d.nodeType);
+          this._chartClick(d, d.nodeType);
         }
       })
       .style('cursor', 'pointer');
@@ -443,7 +444,7 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
       .style('fill', d => d.color)
       .on('click', d => {
         if (d.clickable) {
-          this._chaphClick(d, d.nodeType);
+          this._chartClick(d, d.nodeType);
         }
       })
       .style('cursor', 'pointer');
@@ -454,7 +455,7 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
       .text(d => d.name)
       .on('click', d => {
         if (d.clickable) {
-          this._chaphClick(d, d.nodeType);
+          this._chartClick(d, d.nodeType);
         }
       })
       .style('cursor', 'pointer');
@@ -465,7 +466,7 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
       .text(d => d.name)
       .on('click', d => {
         if (d.clickable) {
-          this._chaphClick(d, d.nodeType);
+          this._chartClick(d, d.nodeType);
         }
       })
       .style('cursor', 'pointer');
@@ -486,22 +487,22 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
       .attr('fill', '#ccc')
       .attr('stroke', '#ccc');
 
-    this.force.on('tick', () => {
-      this.nodes
-        .attr('cx', d => d.x)
-        .attr('cy', d => d.y)
-        .attr('transform', d => 'translate(' + d.x + ',' + d.y + ')');
-      this.edges
-        .attr('x1', d => d.source.x)
-        .attr('y1', d => d.source.y)
-        .attr('x2', d => d.target.x)
-        .attr('y2', d => d.target.y);
-      this.nodelabels
-        .attr('x', d => d.x)
-        .attr('y', d => d.y);
-    });
+    this.force
+      .on('tick', () => {
+        this.nodes
+          .attr('cx', d => d.x)
+          .attr('cy', d => d.y)
+          .attr('transform', d => 'translate(' + d.x + ',' + d.y + ')');
+        this.edges
+          .attr('x1', d => d.source.x)
+          .attr('y1', d => d.source.y)
+          .attr('x2', d => d.target.x)
+          .attr('y2', d => d.target.y);
+        this.nodelabels
+          .attr('x', d => d.x)
+          .attr('y', d => d.y);
+      });
     this.nodes.call(this.force.drag);
-
   }
 
   public ngOnDestroy() {
