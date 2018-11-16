@@ -46,7 +46,8 @@
       top: 145px;
       right: 20px;
       bottom: 25px;
-      border: 1px solid #ffa500;
+      border: 1px solid #cccccc;
+      border-radius: 5px;
     }
   } // table/network
   .tb1_ch1 {
@@ -64,7 +65,8 @@
       right: 20px;
       top: calc(50vh + 160px);
       bottom: 25px;
-      border: 1px solid #ffa500;
+      border: 1px solid #cccccc;
+      border-radius: 5px;
     }
   }
 }
@@ -117,7 +119,8 @@
       top: 145px;
       right: 20px;
       bottom: 25px;
-      border: 1px solid #ffa500;
+      border: 1px solid #cccccc;
+      border-radius: 5px;
     }
   } // table/network
   .tb1_ch1 {
@@ -135,9 +138,14 @@
       right: 20px;
       top: calc(50vh + 160px);
       bottom: 25px;
-      border: 1px solid #ffa500;
+      border: 1px solid #cccccc;
+      border-radius: 5px;
     }
   }
+}
+
+.svg {
+  overflow: auto;
 }
 
 .tbl {
@@ -163,8 +171,15 @@ td:hover {
   margin-top: 2rem;
 }
 
-.assocSpaces {
-  margin-top: 0px;
+.assocTable {
+  margin: 0px;
+  text-align: center;
+  padding-top: 8px;
+  border: 1px solid black;
+  background-color: white;
+  border-radius: 5px;
+  height: 40px;
+  width: 300px;
 }
 
 .tableName {
@@ -172,7 +187,7 @@ td:hover {
   margin-left: 40px;
 }
 
-.assoc {
+.assocDiv {
   width: 300px;
   margin-left: auto;
   margin-right: auto;
@@ -183,7 +198,7 @@ td:hover {
   font-size: 26px;
   text-transform: lowercase;
   font-weight: bolder;
-  color: #cd5c5c;
+  color: #fff;
   letter-spacing: -2px;
 }
 
@@ -192,7 +207,7 @@ td:hover {
   font-weight: lighter;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: #cd5c5c;
+  color: #fff;
   padding-left: 20px;
 }
 
@@ -201,7 +216,7 @@ td:hover {
   padding-right: 10px;
   font-weight: lighter;
   font-size: 14px;
-  color: #cd5c5c;
+  color: #fff;
 }
 
 .headerStyle {
@@ -215,4 +230,22 @@ a {
 
 a:hover {
   text-decoration: underline !important;
+}
+
+.stack-view {
+  border: 1px solid #cccccc;
+  border: radius 5px;
+  text-align: center;
+}
+
+.stack-block-label {
+  flex: 0 0 100%;
+  max-width: 100%;
+  background-color: #cccccc;
+  text-align: left;
+}
+
+.stack-block-content {
+  width: 100%;
+  padding: 0px;
 }

@@ -14,8 +14,8 @@
   <div class="row">
     <table class="table">
       <tbody>
-        <tr class="nav-link" *ngFor="let sasType of sasTypes; let i=index" (click)="goToType(sasType.ID, i); filter.value=''" [class.clicked]="i===selectedRow"
-          style="cursor: pointer;">
+        <tr class="nav-link" *ngFor="let sasType of sasTypes; let i=index" (click)="goToType(sasType.ID, i); filter.value=''"
+          [class.clicked]="i===selectedRow" style="cursor: pointer;">
 
           <td>
             <clr-tooltip>

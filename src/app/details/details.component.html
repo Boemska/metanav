@@ -22,45 +22,44 @@
   </div>
   <div *ngIf="isPageReady" id="divMain">
     <div *ngFor="let historyItem of historyArray; let i = index;">
-      <!--  -->
+      <!-- associationsDivTable_and_arrows-->
       <div *ngIf="historyItem.ASC">
-        <div class="assoc">
+        <div class="assocDiv">
+
           <div style="text-align: center; transform: rotate(180deg)">
             <clr-icon shape="angle-double"></clr-icon>
           </div>
-          <div class="alert alert-success assocSpaces">
-            <div class="alert-items">
-              <div class="alert-item static">
-                <span style="text-align: center" class="alert-text" style="text-align: center; margin: 0px;">
-                  <b>{{historyItem.ASC}}</b>
-                </span>
-              </div>
-            </div>
+
+          <div class="assocTable" [style.background-color]="historyItem.ASCCLR" [style.color]="fontAscColor">
+            <b>{{historyItem.ASC}}</b>
           </div>
+
           <div style="text-align: center; transform: rotate(180deg)">
             <clr-icon shape="angle-double"></clr-icon>
           </div>
+
         </div>
       </div>
-      <!--  -->
-      <div>
-        <clr-stack-view>
-          <clr-stack-block [clrSbExpanded]="historyItem.EXPANDED">
-            <clr-stack-label style="text-align:left;">
+      <!-- stackView -->
+      <div style="padding-right:10px;">
+        <div class="stack-view">
+          <!-- stackView_header -->
+          <div class="stack-block-view">
+            <div class="stack-block-label" [style.background-color]="historyItem.COLOR" [style.color]="fontHeaderColor">
               <div class="headerStyle">
                 <span class="headerName">{{historyItem.NAME}}</span>
                 <span><a href="#{{historyItem.URL}}" target="_blank" class="headerLink">{{historyItem.OBJECT}}</a></span>
               </div>
               <div class="headerType">{{historyItem.TYPE}}</div>
-            </clr-stack-label>
-            <!--  -->
-            <clr-stack-block>
+            </div>
+            <!-- stackView_Body -->
+            <div class="stack-block-view">
               <clr-tabs>
-                <!--  -->
+                <!-- tab-association -->
                 <clr-tab>
                   <button style="margin-left: 10px" clrTabLink>Associations</button>
                   <clr-tab-content *clrIfActive="true">
-                    <clr-stack-content>
+                    <div class="stack-block-content">
                       <div class="tbl">
                         <clr-datagrid>
                           <clr-dg-column [clrDgField]="'ASSOC'">ASSOC</clr-dg-column>
@@ -71,7 +70,13 @@
                             (click)="
                                 disposeGraph();
                                 removeHistoryAfter(i);
-                                updateAssociation(assocData.ASSOC, selectedAssoc, detailArray[i].ASSOC.length);
+                                updateProperties(
+                                  assocData.ASSOC,
+                                  selectedAssoc,
+                                  detailArray[i].ASSOC.length,
+                                  findParentInChart(assocData.genID)
+                                  );
+                                disableClick(assocData.genID);
                                 goToDetails(assocData.ASSOCURI);
                               "
                             style="cursor: pointer;">
@@ -90,15 +95,15 @@
                         </clr-datagrid>
                       </div>
                       <br>
-                    </clr-stack-content>
+                    </div>
                   </clr-tab-content>
                 </clr-tab>
-                <!--  -->
+                <!-- tab-attributes_and_properties -->
                 <clr-tab>
                   <button clrTabLink>Attributes and Properties</button>
                   <clr-tab-content *clrIfActive>
 
-                    <clr-stack-content>
+                    <div class="stack-block-content">
                       <div class="tbl">
                         <clr-datagrid>
                           <clr-dg-column [clrDgField]="'TYPE'">TYPE</clr-dg-column>
@@ -119,16 +124,15 @@
                         </clr-datagrid>
                       </div>
                       <br>
-                    </clr-stack-content>
+                    </div>
                   </clr-tab-content>
                 </clr-tab>
 
-                <!--  -->
               </clr-tabs>
-            </clr-stack-block>
+            </div>
 
-          </clr-stack-block>
-        </clr-stack-view>
+          </div>
+        </div>
       </div>
     </div>
   </div>

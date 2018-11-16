@@ -14,28 +14,8 @@
   width: 250px;
 }
 
-.stack-view {
-  border: 1px solid #ffa500 !important;
-  border: radius 5px;
-  text-align: center;
-}
-
-.stack-view .stack-block-label {
-  flex: 0 0 100%;
-  max-width: 100%;
-  background-color: #ffe4c4;
-
-}
-
-.stack-view .stack-block-expanded>.stack-block-label {
-  flex: 0 0 100%;
-  max-width: 100%;
-  background-color: #ffe4c4;
-}
-
-.stack-view .stack-block-content {
-  width: 90%;
-  padding: 0px;
+.login-sidebar-wrapper {
+  z-index: 101;
 }
 
 @media (min-width: 769px) {
