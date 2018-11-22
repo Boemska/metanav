@@ -1,7 +1,7 @@
 import { Component, OnDestroy, AfterViewInit } from '@angular/core';
 import { Router, Params, NavigationEnd } from '@angular/router';
 import { MetanavService } from '../metanav.service';
-import { Subscription } from 'rxjs';
+import { Subscription } from 'rxjs/Subscription';
 import * as d3 from 'd3';
 
 @Component({
@@ -26,8 +26,10 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
   public tableParent: any = {};
   public fontHeaderColor: string;
   public fontAscColor: string;
+  public sidenavToggleMessage: string;
   private _firstStart: boolean = true;
   private _linkDetailsSub: Subscription;
+  private _sidenavToggle: Subscription;
 
   // d3js
   public dataset: any = { nodes: [], edges: [] };
@@ -53,7 +55,13 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
   constructor(
     private _metanavService: MetanavService,
     private _router: Router
-  ) { }
+  ) {
+    this._sidenavToggle = this._metanavService.getSidenavToggleState().subscribe(
+      message => {
+        this.sidenavToggleMessage = message;
+        this.reDrawGraph();
+      });
+  }
 
   public async ngAfterViewInit() {
     if (this._firstStart) {
@@ -551,5 +559,6 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
 
   public ngOnDestroy() {
     this._linkDetailsSub.unsubscribe();
+    this._sidenavToggle.unsubscribe();
   }
 }

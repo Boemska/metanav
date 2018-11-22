@@ -8,6 +8,7 @@
     height: 24px;
   }
 }
+
 .version {
   display: flex;
   height: 1rem;
@@ -24,14 +25,16 @@
   .largeScreen {
     display: none;
   }
-
-  .branding{
+  .branding {
     z-index: 1 !important;
   }
 }
 
 @media screen and (min-width: 769px) {
   .smallScreen {
+    display: none;
+  }
+  .sidenavOFF {
     display: none;
   }
 }

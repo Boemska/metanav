@@ -1,9 +1,21 @@
 import { Injectable } from '@angular/core';
 import { AdapterService } from './boemska/adapter.service';
+import { Observable } from 'rxjs';
+import { Subject } from 'rxjs/Subject';
 import * as ColorHash from 'color-hash';
 
 @Injectable()
 export class MetanavService {
+
+  private sidenavToggleSubject = new Subject<any>();
+
+  public setSidenavToggleState(message: string) {
+    this.sidenavToggleSubject.next({ text: message });
+  }
+
+  public getSidenavToggleState(): Observable<any> {
+    return this.sidenavToggleSubject.asObservable();
+  }
 
   constructor(
     private _adapterService: AdapterService

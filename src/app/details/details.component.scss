@@ -3,15 +3,16 @@
     display: flex;
     justify-content: center;
     top: 60px;
+    left: 5px;
     z-index: 111;
-    left: 250px;
   } // table view
   .tb1_ch0 {
     #divMain {
-      position: fixed;
-      top: 145px;
-      left: 270px;
-      right: 20px;
+      position: relative;
+      height: calc(100vh - 200px);
+      top: 25px;
+      left: 5px;
+      right: 5px;
       bottom: 25px;
       overflow-y: auto;
     }
@@ -24,49 +25,61 @@
       display: none;
     }
     #chart {
-      position: fixed;
-      left: 255px;
-      top: 145px;
+      position: relative;
+      width: calc(100% - 5px);
+      height: calc(100vh - 200px);
+      top: 25px;
+      left: 5px;
       right: 5px;
       bottom: 25px;
+      border: 1px solid #cccccc;
+      border-radius: 3px;
     }
   } // table||network
   .tb0_ch0 {
     #divMain {
-      position: fixed;
-      top: 145px;
-      left: 270px;
-      right: calc(50% - 130px);
+      display: inline-block;
+      position: relative;
+      width: calc( 50% - 5px);
+      height: calc(100vh - 200px);
+      top: 25px;
+      left: 5px;
       bottom: 25px;
       overflow-y: auto;
     }
     #chart {
-      position: fixed;
-      left: calc(50% + 140px);
-      top: 145px;
-      right: 20px;
+      display: inline-block;
+      position: relative;
+      width: calc(50% - 10px);
+      height: calc(100vh - 200px);
+      top: 24px;
+      left: 10px;
+      right: 5px;
       bottom: 25px;
       border: 1px solid #cccccc;
-      border-radius: 5px;
+      border-radius: 3px;
     }
   } // table/network
   .tb1_ch1 {
     #divMain {
       position: relative;
-      margin-left: -4px;
-      margin-right: -4px;
+      width: calc(100% - 10px);
+      height: calc(50vh - 100px);
+      margin-left: 5px;
+      margin-right: 5px;
       top: 25px;
-      height: 50vh;
       overflow-y: auto;
     }
     #chart {
-      position: fixed;
-      left: 270px;
-      right: 20px;
-      top: calc(50vh + 160px);
+      position: relative;
+      width: calc(100% - 5px);
+      height: calc(50vh - 120px);
+      top: 46px;
+      left: 5px;
+      right: 5px;
       bottom: 25px;
       border: 1px solid #cccccc;
-      border-radius: 5px;
+      border-radius: 3px;
     }
   }
 }
@@ -76,8 +89,8 @@
     display: flex;
     justify-content: center;
     top: 60px;
-    z-index: 111;
     left: 20px;
+    z-index: 111;
   } // table view
   .tb1_ch0 {
     #divMain {
@@ -98,10 +111,12 @@
     }
     #chart {
       position: fixed;
-      left: 20px;
       top: 145px;
+      left: 20px;
       right: 20px;
       bottom: 25px;
+      border: 1px solid #cccccc;
+      border-radius: 3px;
     }
   } // table||network
   .tb0_ch0 {
@@ -115,12 +130,12 @@
     }
     #chart {
       position: fixed;
-      left: calc(50% + 25px);
       top: 145px;
+      left: calc(50% + 25px);
       right: 20px;
       bottom: 25px;
       border: 1px solid #cccccc;
-      border-radius: 5px;
+      border-radius: 3px;
     }
   } // table/network
   .tb1_ch1 {
@@ -134,12 +149,12 @@
     }
     #chart {
       position: fixed;
+      top: calc(50vh + 160px);
       left: 20px;
       right: 20px;
-      top: calc(50vh + 160px);
       bottom: 25px;
       border: 1px solid #cccccc;
-      border-radius: 5px;
+      border-radius: 3px;
     }
   }
 }
@@ -151,7 +166,7 @@
 .tbl {
   margin-left: auto;
   margin-right: auto;
-  width: 95%;
+  width: 100%;
 }
 
 .clicked {
