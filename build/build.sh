@@ -81,7 +81,7 @@ echo ---------------------------------------------------------------
 
 mkdir $SCRLOC/tmp/test
 cp -a $SCRLOC/tmp/$PROJECT_FOLDER/dist/. $SCRLOC/tmp/test
-cp $SCRLOC/tmp/contents/h54sConfig_boemska.json $SCRLOC/tmp/test/h54s.config
+cp $SCRLOC/tmp/contents/h54sConfig_boemska.json $SCRLOC/tmp/test/h54sConfig.json
 rsync -avz --exclude .git/ --exclude .gitignore --del $SCRLOC/tmp/test/* \
     $USERNAME@$TESTSCPTARGET
 
@@ -91,7 +91,7 @@ echo ---------------------------------------------------------------
 
 
 cp $SCRLOC/tmp/contents/h54sConfig.json \
-    $SCRLOC/tmp/$BUILD_FOLDER/metanavigator/h54s.config
+    $SCRLOC/tmp/$BUILD_FOLDER/metanavigator/h54sConfig.json
 cd $SCRLOC/tmp
 zip -r meta-navigator.zip $BUILD_FOLDER/*
 
