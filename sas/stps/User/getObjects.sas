@@ -1,4 +1,4 @@
-%bafGetDatasets())
+%bafGetDatasets()
 
 %let type=SASLibrary;/*default value */
 data _null_;
