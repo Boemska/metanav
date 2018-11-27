@@ -34,11 +34,11 @@ Unzip the package and import the `import.spk` file using SAS Management Console 
 
 ### 3 - Update the h54s config file
 
-Inside the `metanav` folder there is a configuration file called `h54s.config`.  Within this, set the `metadataRoot` value to the folder root identified in the previous step.
+Inside the `metanav` folder there is a configuration file called `h54sConfig.json`.  Within this, set the `metadataRoot` value to the folder root identified in the previous step.
 
 ### 4 - Deploy the frontend
 
-Copy the entire `metanav` folder (with the modifed `h54s.config`) to your web server.  For 9.4 this location would be `/opt/sas94/config/Lev1/Web/WebServer/htdocs`.
+Copy the entire `metanav` folder (with the modifed `h54sConfig.json`) to your web server.  For 9.4 this location would be `/opt/sas94/config/Lev1/Web/WebServer/htdocs`.
 
 
 ### 5 - Profit
