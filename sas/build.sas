@@ -203,7 +203,7 @@ run;
 
 data _null_;
   file "&build_dir/h54sConfig_boemska.json";
-  string='{"metadataRoot":"'!!"&deploy_dir/deploy"!!'/UserNavigator",'
+  string='{"metadataRoot":"'!!"&deploy_dir/deploy"!!'/MetaNavigator",'
     !!'"metadataRootLocator":"'!!"&uid"!!'"}';
   put string;
 run;
