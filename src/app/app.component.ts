@@ -13,7 +13,8 @@ export class AppComponent {
   public version = VERSION.version;
   public hashPart = VERSION.hash;
   public sidenavSwitch: string = 'sidenavON';
-
+  public sidenavShow: boolean = false
+  
   constructor(
     private _metanavService: MetanavService
   ) { }
@@ -21,6 +22,7 @@ export class AppComponent {
   public toggleSidenav() {
     this.sidenavSwitch === 'sidenavON' ? this.sidenavSwitch = 'sidenavOFF' : this.sidenavSwitch = 'sidenavON';
     this._setSidenavToggleState();
+    this.sidenavShow = !this.sidenavShow;
   }
 
   private _setSidenavToggleState(): void {

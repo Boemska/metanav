@@ -27,12 +27,11 @@ table {
 
 .filter {
   position: fixed;
-  padding: 1rem 0 1rem 0;
+  padding: 1rem 0 1rem 10px;
   background: whitesmoke;
-  width: 235px;
+  width: 249px;
   top: 60px;
   left: 0px;
-  border-top: 1px solid darkgrey;
   border-bottom: 1px solid darkgrey;
   z-index: 100;
 }

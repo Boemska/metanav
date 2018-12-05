@@ -5,22 +5,22 @@
   </span>
 </div>
 <div *ngIf="isPageReady">
-  <div>
+  <div class="objectTitle">
     <h3>
       <b>Objects</b> for
       <b>sasType: </b>
       <i>{{sasType}}</i>
     </h3>
+     <!-- filter for objects -->
+      <div class="form-group filter">
+        <clr-icon shape="search" size="25"></clr-icon>
+        <input type="text" placeholder="Filter by ObjectName" size="25" #filter (keyup)="onFilterInput(filter.value)" />
+        <button aria-label="Close" class="close" type="button" (click)="clearFilter(); filter.value='';">
+          <clr-icon aria-hidden="true" shape="close" size="20"></clr-icon>
+        </button>
+      </div>
+      <!--  -->
   </div>
-  <!-- filter for objects -->
-  <div class="form-group filter">
-    <clr-icon shape="search" size="25"></clr-icon>
-    <input type="text" placeholder="Filter by ObjectName" size="25" #filter (keyup)="onFilterInput(filter.value)" />
-    <button aria-label="Close" class="close" type="button" (click)="clearFilter(); filter.value='';">
-      <clr-icon aria-hidden="true" shape="close" size="20"></clr-icon>
-    </button>
-  </div>
-  <!--  -->
   <div class="tbl">
     <clr-datagrid>
       <clr-dg-column [clrDgField]="'ID'">ID</clr-dg-column>

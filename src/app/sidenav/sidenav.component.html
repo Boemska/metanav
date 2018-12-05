@@ -19,7 +19,7 @@
 
           <td>
             <clr-tooltip>
-              <clr-icon clrTooltipTrigger shape="info-circle" size="24"></clr-icon>
+              <clr-icon clrTooltipTrigger shape="circle" size="24" class="is-solid" [style.color]="sasTypeColors[i]"></clr-icon>
               <clr-tooltip-content clrSize="md" *clrIfOpen>
                 <span><b>Id: </b>{{sasType.ID}}; </span>
                 <span><b>SubTypes: </b>{{sasType.HASSUBTYPES}}</span>

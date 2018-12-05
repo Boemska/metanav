@@ -9,7 +9,7 @@
   .tb1_ch0 {
     #divMain {
       position: relative;
-      height: calc(100vh - 200px);
+      height: 100%;
       top: 25px;
       left: 5px;
       right: 5px;
@@ -186,15 +186,23 @@ td:hover {
   margin-top: 2rem;
 }
 
+.assocContainer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
 .assocTable {
   margin: 0px;
   text-align: center;
-  padding-top: 8px;
-  border: 1px solid black;
   background-color: white;
-  border-radius: 5px;
-  height: 40px;
-  width: 300px;
+  height: 50px;
+  width: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  margin-left: 40px;
 }
 
 .tableName {
@@ -203,9 +211,7 @@ td:hover {
 }
 
 .assocDiv {
-  width: 300px;
-  margin-left: auto;
-  margin-right: auto;
+  width: 85px;
 }
 
 .headerName {
@@ -213,16 +219,16 @@ td:hover {
   font-size: 26px;
   text-transform: lowercase;
   font-weight: bolder;
-  color: #fff;
+  color: #676767;
   letter-spacing: -2px;
 }
 
 .headerType {
-  text-align: left;
+  text-align: right;
   font-weight: lighter;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: #fff;
+  color: #676767;
   padding-left: 20px;
 }
 
@@ -231,12 +237,29 @@ td:hover {
   padding-right: 10px;
   font-weight: lighter;
   font-size: 14px;
-  color: #fff;
+  color: #676767;
+  margin-left: 5px;
 }
 
 .headerStyle {
   display: flex;
+  justify-content: flex-start;
+  width:100%;
+}
+
+.headerColumn {
+  display: flex;
+  flex-direction: column;
+  margin-left: .5rem;
+  justify-content: center;
+}
+
+.headerRow {
+  display: flex;
+  flex-direction: row;
   justify-content: space-between;
+  width: calc(100% - 100px);
+  align-items: center;
 }
 
 a {
@@ -256,11 +279,24 @@ a:hover {
 .stack-block-label {
   flex: 0 0 100%;
   max-width: 100%;
-  background-color: #cccccc;
+  background-color: #e8e8e8;
   text-align: left;
+  height: 110px;
+  display: flex;
+  align-items: center;
 }
 
-.stack-block-content {
-  width: 100%;
-  padding: 0px;
+.headerAvatar {
+  display: flex;
+  height: 3rem;
+  width: 3rem;
+  border-radius: 3rem;
+  justify-content: center;
+  align-items: center;
+  font-size: 28px;
+}
+
+#container > div {
+  margin-top: -24px;
+  margin-bottom: 12px
 }

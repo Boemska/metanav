@@ -16,6 +16,7 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
   public dataFromUrl: Array<string> = [];
   public url: string = '';
   public isPageReady: boolean = true;
+  public expand: boolean = false;
   public sasObjectUri: string;
   public historyArray: Array<any> = [];
   public historyObj: any = {};
@@ -333,7 +334,7 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
       .enter()
       .append('text')
       .attr('dy', d => { return d.nodeType === 'object' ? 40 : 30; })
-      .style("text-anchor", "middle")
+      .style("text-anchor", "end")
       .text(d => d.name)
       .attr('class', d => d.state === this._stateNew ? 'nodelabelNew' : 'nodelabelOld');
 
@@ -385,7 +386,7 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
     // new labels
     this.svg
       .selectAll('.nodelabelNew')
-      .attr('stroke', 'black')
+      .attr('stroke', '#676767')
       .text(d => d.name)
       .on('click', d => {
         if (d.clickable) {
@@ -540,8 +541,9 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
       this.historyArray.push(this.historyObj);
 
       setTimeout(() => {
-        let height = document.getElementById('divMain').scrollHeight;
-        document.getElementById('divMain').scrollTo(0, height);
+        let mainDiv = document.getElementById('divMain');
+        let elmnt = mainDiv.childNodes[mainDiv.childNodes.length - 2].firstChild.parentElement;
+        elmnt.scrollIntoView();  
       }, 0);
 
       this.fontHeaderColor = this._bwColor(this._lastInHistArr().COLOR);
