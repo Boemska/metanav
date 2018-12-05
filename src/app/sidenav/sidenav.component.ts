@@ -12,10 +12,11 @@ import { Router } from '@angular/router';
 export class SidenavComponent implements OnInit, OnDestroy {
   public sasTypes: Array<any> = [];
   private sasTypesAll: Array<any> = [];
+  private sasTypeColors: Array<any> = [];
   public filterSasTypes: Array<any> = [];
   public selectedRow: number;
   public isPageReady: boolean = false;
-
+  
   private _filter: BehaviorSubject<string> = new BehaviorSubject<string>('');
   private _filterSub: Subscription;
 
@@ -43,11 +44,19 @@ export class SidenavComponent implements OnInit, OnDestroy {
     this.setActiveTypeRow(this._metanavService.getTypeFromUrl());
   }
 
+  private _colorizeMe(inputString) {
+    return this._metanavService.colourHash(inputString);
+  }
+
   public async getSasTypes() {
     try {
       let data = await this._metanavService.getTypes();
       this.sasTypes = data.SASTypes;
       this.sasTypesAll = this.sasTypes;
+      let mapped = this.sasTypes.map((item) => {
+        return this._colorizeMe(item.ID)
+      });
+      this.sasTypeColors = mapped;
       this.isPageReady = true;
     } catch (error) {
       console.log(error);

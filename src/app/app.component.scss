@@ -3,9 +3,9 @@
 // The full license information can be found in LICENSE in the root directory of this project.
 .clr-icon {
   &.header-logo {
-    background-image: url(../images/boemska_logo.png);
-    width: 24px;
-    height: 24px;
+    background-image: url(../images/logo-gray.svg);
+    width: 50px;
+    height: 50px;
   }
 }
 
@@ -37,4 +37,15 @@
   .sidenavOFF {
     display: none;
   }
+}
+
+.toggleRight {
+  position: absolute;
+  top: 18px;
+  left: 230px;
+}
+
+.toggle-switch input[type=checkbox]:checked+label:before {
+  border-color: #0094d2;
+  background-color: #007cbb;
 }

@@ -25,3 +25,15 @@ td:hover {
   text-align: right;
   margin-right: 30px;
 }
+
+.objectTitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-left:35px;
+}
+
+.objectTitle h3 {
+  margin-bottom: 17px;
+  color: #474747;
+}

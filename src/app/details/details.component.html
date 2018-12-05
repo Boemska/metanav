@@ -1,5 +1,5 @@
 <div class={{viewType}} id="container">
-  <div class="viewType">
+  <div>
     <clr-tabs>
       <clr-tab>
         <button clrTabLink (click)="setViewType('tb1_ch0')" (click)="reDrawGraph()">Table View</button>
@@ -21,36 +21,45 @@
     </clr-tabs>
   </div>
   <div *ngIf="isPageReady" id="divMain">
-    <div *ngFor="let historyItem of historyArray; let i = index;">
+    <div id="ell" *ngFor="let historyItem of historyArray; let i = index;">
       <!-- associationsDivTable_and_arrows-->
-      <div *ngIf="historyItem.ASC">
+      <div *ngIf="historyItem.ASC" class="assocContainer">
         <div class="assocDiv">
 
-          <div style="text-align: center; transform: rotate(180deg)">
-            <clr-icon shape="angle-double"></clr-icon>
+          <div style="text-align: center; transform: rotate(180deg);margin-left: 47px;">
+            <span style="border-left: 1px solid #676767; height: 2rem;"></span>
           </div>
 
           <div class="assocTable" [style.background-color]="historyItem.ASCCLR" [style.color]="fontAscColor">
-            <b>{{historyItem.ASC}}</b>
+            <b>{{historyItem.ASC[0]}}{{historyItem.ASC[1]}}</b>
           </div>
-
-          <div style="text-align: center; transform: rotate(180deg)">
-            <clr-icon shape="angle-double"></clr-icon>
-          </div>
-
+          
+          <div style="text-align: center; transform: rotate(180deg);margin-left: 47px;">
+              <span style="border-left: 1px solid #676767; height: 2rem;"></span>
+            </div>
+            
         </div>
+        <span style="margin-left: 10px;"><b>{{historyItem.ASC}}</b></span>
       </div>
       <!-- stackView -->
+
+      
       <div style="padding-right:10px;">
         <div class="stack-view">
+
           <!-- stackView_header -->
           <div class="stack-block-view">
-            <div class="stack-block-label" [style.background-color]="historyItem.COLOR" [style.color]="fontHeaderColor">
+            <div class="stack-block-label">
               <div class="headerStyle">
-                <span class="headerName">{{historyItem.NAME}}</span>
-                <span><a href="#{{historyItem.URL}}" target="_blank" class="headerLink">{{historyItem.OBJECT}}</a></span>
+                <span class="headerAvatar" [style.background-color]="historyItem.COLOR" [style.color]="fontHeaderColor">{{historyItem.TYPE[0]}}</span>
+                <div class="headerRow">
+                  <div class="headerColumn">
+                    <span class="headerName">{{historyItem.NAME}}</span>
+                    <span><a href="#{{historyItem.URL}}" target="_blank" class="headerLink">{{historyItem.OBJECT}}</a></span>
+                  </div>
+                  <div class="headerType">{{historyItem.TYPE}}</div>
+                </div>
               </div>
-              <div class="headerType">{{historyItem.TYPE}}</div>
             </div>
             <!-- stackView_Body -->
             <div class="stack-block-view">
@@ -94,7 +103,6 @@
                           </clr-dg-footer>
                         </clr-datagrid>
                       </div>
-                      <br>
                     </div>
                   </clr-tab-content>
                 </clr-tab>
@@ -123,7 +131,6 @@
                           </clr-dg-footer>
                         </clr-datagrid>
                       </div>
-                      <br>
                     </div>
                   </clr-tab-content>
                 </clr-tab>

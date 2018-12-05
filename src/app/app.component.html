@@ -25,9 +25,9 @@
   <div class="content-container contentMarginBottom">
     <div class="content-area">
 
-      <div class="toggle-switch right-label largeScreen">
-        <input type="checkbox" id="sidenavSwitch" (click)="toggleSidenav()">
-        <label for="sidenavSwitch">Turn Off Sidenav</label>
+      <div class="toggle-switch left-label largeScreen toggleRight">
+        <input type="checkbox" id="sidenavSwitch" (click)="toggleSidenav()" [(ngModel)]="sidenavShow">
+        <label for="sidenavSwitch">Show type lookup</label>
       </div>
 
       <router-outlet></router-outlet>
@@ -36,7 +36,7 @@
       </div>
     </div>
 
-    <div class="sidenav {{sidenavSwitch}} largeScreen">
+    <div class="sidenav largeScreen" [ngClass]="sidenavShow ? 'sidenavON' : 'sidenavOFF'">
       <app-sidenav></app-sidenav>
     </div>
 
