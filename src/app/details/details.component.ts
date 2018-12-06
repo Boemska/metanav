@@ -1,5 +1,5 @@
 import { Component, OnDestroy, AfterViewInit } from '@angular/core';
-import { Router, Params, NavigationEnd } from '@angular/router';
+import { Router } from '@angular/router';
 import { MetanavService } from '../metanav.service';
 import { Subscription } from 'rxjs/Subscription';
 import * as d3 from 'd3';
@@ -29,7 +29,6 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
   public fontAscColor: string;
   public sidenavToggleMessage: string;
   private _firstStart: boolean = true;
-  private _linkDetailsSub: Subscription;
   private _sidenavToggle: Subscription;
 
   // d3js
@@ -66,19 +65,15 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
 
   public async ngAfterViewInit() {
     if (this._firstStart) {
-      this.url = window.location.href.split('#').pop();
-      await this._loadData();
-      this.drawGraph();
+      this.onUrlChanged();
       this._firstStart = false;
     }
-    this._linkDetailsSub = this._router.events.subscribe(
-      async (link: Params) => {
-        if (link instanceof NavigationEnd) {
-          this.url = link.url;
-          await this._loadData();
-          this.drawGraph();
-        }
-      });
+  }
+
+  public async onUrlChanged() {
+    this.url = window.location.href.split('#').pop();
+    await this._loadData();
+    this.reDrawGraph();
   }
 
   public reDrawGraph() {
@@ -110,7 +105,8 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
     for (let j = 0; j < this.historyArray.length; j++) {
       this.historyArray[j].EXPANDED = false;
     }
-    this._router.navigateByUrl('/type/' + sasType[1] + '/object/' + objUri[1]);
+    await this._router.navigateByUrl('/type/' + sasType[1] + '/object/' + objUri[1]);
+    this.onUrlChanged();
   }
 
   public disposeGraph() {
@@ -543,7 +539,7 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
       setTimeout(() => {
         let mainDiv = document.getElementById('divMain');
         let elmnt = mainDiv.childNodes[mainDiv.childNodes.length - 2].firstChild.parentElement;
-        elmnt.scrollIntoView();  
+        elmnt.scrollIntoView();
       }, 0);
 
       this.fontHeaderColor = this._bwColor(this._lastInHistArr().COLOR);
@@ -560,7 +556,6 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
   }
 
   public ngOnDestroy() {
-    this._linkDetailsSub.unsubscribe();
     this._sidenavToggle.unsubscribe();
   }
 }

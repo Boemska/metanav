@@ -33,17 +33,17 @@
           <div class="assocTable" [style.background-color]="historyItem.ASCCLR" [style.color]="fontAscColor">
             <b>{{historyItem.ASC[0]}}{{historyItem.ASC[1]}}</b>
           </div>
-          
+
           <div style="text-align: center; transform: rotate(180deg);margin-left: 47px;">
               <span style="border-left: 1px solid #676767; height: 2rem;"></span>
             </div>
-            
+
         </div>
         <span style="margin-left: 10px;"><b>{{historyItem.ASC}}</b></span>
       </div>
       <!-- stackView -->
 
-      
+
       <div style="padding-right:10px;">
         <div class="stack-view">
 
@@ -77,7 +77,6 @@
 
                           <clr-dg-row *clrDgItems="let assocData of detailArray[i].ASSOC; let selectedAssoc=index;"
                             (click)="
-                                disposeGraph();
                                 removeHistoryAfter(i);
                                 updateProperties(
                                   assocData.ASSOC,
