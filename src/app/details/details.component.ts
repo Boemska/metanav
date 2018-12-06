@@ -1,4 +1,5 @@
 import { Component, OnDestroy, AfterViewInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { MetanavService } from '../metanav.service';
 import { Subscription } from 'rxjs/Subscription';
 import * as d3 from 'd3';
@@ -52,7 +53,8 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
   private readonly _stateOld: string = 'old';
 
   constructor(
-    private _metanavService: MetanavService
+    private _metanavService: MetanavService,
+    private _router: Router
   ) {
     this._sidenavToggle = this._metanavService.getSidenavToggleState().subscribe(
       message => {
@@ -63,9 +65,7 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
 
   public async ngAfterViewInit() {
     if (this._firstStart) {
-      this.url = window.location.href.split('#').pop();
-      await this._loadData();
-      this.drawGraph();
+      this.onUrlChanged();
       this._firstStart = false;
     }
   }
@@ -73,8 +73,7 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
   public async onUrlChanged() {
     this.url = window.location.href.split('#').pop();
     await this._loadData();
-    this.disposeGraph();
-    this.drawGraph();
+    this.reDrawGraph();
   }
 
   public reDrawGraph() {
@@ -101,17 +100,20 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
   }
 
   public async goToDetails(assocUri: string) {
+    let objUri = assocUri.split('\\');
+    let sasType = objUri[0].split(':');
     for (let j = 0; j < this.historyArray.length; j++) {
       this.historyArray[j].EXPANDED = false;
     }
+    await this._router.navigateByUrl('/type/' + sasType[1] + '/object/' + objUri[1]);
     this.onUrlChanged();
   }
 
   public disposeGraph() {
+    document.getElementById('chart').innerHTML = '';
     if (this.force) {
       this.force.stop();
     }
-    document.getElementById('chart').innerHTML = '';
   }
 
   public setViewType(viewType: string) {
