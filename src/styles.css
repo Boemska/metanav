@@ -51,7 +51,6 @@
   .subnav {
     overflow-y: auto;
   }
-
 }
 
 .datagrid-overlay-wrapper {
@@ -69,11 +68,11 @@
 }
 
 .header .branding .title {
-  color:#555555;
+  color: #555555;
 }
 
-.boemska-nav-dropdown  > button.dropdown-toggle{
-  color: #737373!important;
+.boemska-nav-dropdown>button.dropdown-toggle {
+  color: #737373 !important;
 }
 
 .stack-view .stack-block-expanded>.stack-block-label {
@@ -89,43 +88,53 @@
 }
 
 .stack-view .stack-block-expanded>.stack-block-content {
-  background-color:#ececeb;
+  background-color: #ececeb;
+}
+
+.stack-view .stack-block-label {
+  max-width: 100% !important;
+  flex: 0 !important;
+}
+
+.stack-view .stack-block {
+  flex-flow: column !important;
 }
 
 clr-icon.is-inverse, clr-icon.is-white {
-  fill: #474747!important;
+  fill: #474747 !important;
 }
 
-
 /* width */
+
 ::-webkit-scrollbar {
   width: 7px;
 }
 
 /* Track */
+
 ::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 1px #9a9a9a; 
+  box-shadow: inset 0 0 1px #9a9a9a;
   border-radius: 0px;
 }
 
 /* Handle */
+
 ::-webkit-scrollbar-thumb {
-  background: #9a9a9a; 
+  background: #9a9a9a;
   border-radius: 2px;
 }
 
 /* Handle on hover */
+
 ::-webkit-scrollbar-thumb:hover {
-  background: #9a9a9a; 
+  background: #9a9a9a;
 }
 
-#style-3::-webkit-scrollbar
-{
-	width: 6px;
-	background-color: #F5F5F5;
+#style-3::-webkit-scrollbar {
+  width: 6px;
+  background-color: #F5F5F5;
 }
 
-#style-3::-webkit-scrollbar-thumb
-{
-	background-color: #000000;
+#style-3::-webkit-scrollbar-thumb {
+  background-color: #000000;
 }
