@@ -147,6 +147,10 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
     }
   }
 
+  private _getTypeURL(url: string): string {
+    return url.split("/object/")[0];
+  }
+
   private _disableClick(d3Item: any) {
     d3Item.clickable = false;
   }
@@ -528,6 +532,7 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
         NAME: this.detailsName,
         ASC: this.nextAssoc,
         URL: this.url,
+        typeURL: this._getTypeURL(this.url),
         COLOR: this._colorizeMe(this.dataFromUrl[0]),
         ASCCLR: this._colorizeMe(this.nextAssoc),
         genID: Math.random(),
