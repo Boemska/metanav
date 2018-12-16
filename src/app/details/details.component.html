@@ -22,6 +22,7 @@
   </div>
   <div *ngIf="isPageReady" id="divMain">
     <div id="ell" *ngFor="let historyItem of historyArray; let i = index;">
+
       <!-- associationsDivTable_and_arrows-->
       <div *ngIf="historyItem.ASC" class="assocContainer">
         <div class="assocDiv">
@@ -35,40 +36,41 @@
           </div>
 
           <div style="text-align: center; transform: rotate(180deg);margin-left: 47px;">
-              <span style="border-left: 1px solid #676767; height: 2rem;"></span>
-            </div>
+            <span style="border-left: 1px solid #676767; height: 2rem;"></span>
+          </div>
 
         </div>
         <span style="margin-left: 10px;"><b>{{historyItem.ASC}}</b></span>
       </div>
-      <!-- stackView -->
-
 
       <div style="padding-right:10px;">
-        <div class="stack-view">
 
-          <!-- stackView_header -->
-          <div class="stack-block-view">
-            <div class="stack-block-label">
-              <div class="headerStyle">
-                <span class="headerAvatar" [style.background-color]="historyItem.COLOR" [style.color]="fontHeaderColor">{{historyItem.TYPE[0]}}</span>
-                <div class="headerRow">
-                  <div class="headerColumn">
-                    <span class="headerName">{{historyItem.NAME}}</span>
-                    <span><a href="#{{historyItem.URL}}" target="_blank" class="headerLink">{{historyItem.OBJECT}}</a></span>
-                  </div>
-                  <div class="headerType">{{historyItem.TYPE}}</div>
+        <!-- stackView -->
+        <clr-stack-view>
+          <clr-stack-block [clrSbExpanded]="historyItem.EXPANDED">
+
+            <!-- stackView_header -->
+            <div class="headerStyle stack-block-label">
+
+              <span class="headerAvatar" [style.background-color]="historyItem.COLOR" [style.color]="fontHeaderColor">{{historyItem.TYPE[0]}}</span>
+              <div class="headerRow">
+                <div class="headerColumn">
+                  <span class="headerName">{{historyItem.NAME}}</span>
+                  <span><a href="#{{historyItem.URL}}" target="_blank" class="headerLink">{{historyItem.OBJECT}}</a></span>
                 </div>
+                <div class="headerType">{{historyItem.TYPE}}</div>
               </div>
             </div>
+
             <!-- stackView_Body -->
-            <div class="stack-block-view">
+            <clr-stack-block>
               <clr-tabs>
+
                 <!-- tab-association -->
                 <clr-tab>
                   <button style="margin-left: 10px" clrTabLink>Associations</button>
                   <clr-tab-content *clrIfActive="true">
-                    <div class="stack-block-content">
+                    <clr-stack-content>
                       <div class="tbl">
                         <clr-datagrid>
                           <clr-dg-column [clrDgField]="'ASSOC'">ASSOC</clr-dg-column>
@@ -102,15 +104,16 @@
                           </clr-dg-footer>
                         </clr-datagrid>
                       </div>
-                    </div>
+                    </clr-stack-content>
                   </clr-tab-content>
                 </clr-tab>
+
                 <!-- tab-attributes_and_properties -->
                 <clr-tab>
                   <button clrTabLink>Attributes and Properties</button>
                   <clr-tab-content *clrIfActive>
 
-                    <div class="stack-block-content">
+                    <clr-stack-content>
                       <div class="tbl">
                         <clr-datagrid>
                           <clr-dg-column [clrDgField]="'TYPE'">TYPE</clr-dg-column>
@@ -130,15 +133,14 @@
                           </clr-dg-footer>
                         </clr-datagrid>
                       </div>
-                    </div>
+                    </clr-stack-content>
                   </clr-tab-content>
                 </clr-tab>
-
               </clr-tabs>
-            </div>
 
-          </div>
-        </div>
+            </clr-stack-block>
+          </clr-stack-block>
+        </clr-stack-view>
       </div>
     </div>
   </div>
