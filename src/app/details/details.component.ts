@@ -37,6 +37,7 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
   public nodes: any;
   public edges: any;
   public nodelabels: any;
+  public nodelabelsInner: any;
   public force: any;
   public backToExistingNode: boolean = false;
   public parentNode: any;
@@ -327,15 +328,80 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
       });
 
     // set node labels as new or old
-    this.nodelabels = this.svg
+    this.nodelabelsInner = this.svg
       .selectAll('nodelabelNew' || 'nodelabelOld')
       .data(nodes)
       .enter()
       .append('text')
-      .attr('dy', d => { return d.nodeType === 'object' ? 40 : 30; })
-      .style("text-anchor", "end")
-      .text(d => d.name)
-      .attr('class', d => d.state === this._stateNew ? 'nodelabelNew' : 'nodelabelOld');
+      .text(d => {
+        if (d.nodeType === 'object') {
+          return d.type;
+        } else if (d.nodeType === 'collAssoc') {
+          return d.name.substring(0, 2);
+        }
+      })
+      .attr('dy', d => d.nodeType === 'object' ? 7 : 4)
+      .attr('font-size', d => d.nodeType === 'object' ? 20 : 12)
+      .attr('fill', 'white')
+      .style("text-anchor", "middle")
+      .attr('cursor', d => d.nodeType === 'object' ? 'default' : 'pointer')
+      .on('click', d => {
+        if (d.clickable) {
+          this.chartClick(d, d.nodeType);
+        }
+      });
+
+    this.nodelabels = this.svg
+      .selectAll('nodelabelNew' || 'nodelabelOld')
+      .data(nodes)
+      .enter()
+      .append('svg')
+      .attr('class', d => d.state === this._stateNew ? 'nodelabelNew' : 'nodelabelOld')
+      .attr('nodeName', d => d.nodeType === 'object' ? d.name.toLowerCase() : d.name)
+      .attr('objectId', d => d.objectId)
+      .attr('nodeType', d => d.nodeType);
+
+
+    d3.selectAll('svg')
+      .each(function (svgElement) {
+        let element = d3.select(this);
+
+        let mnNodeTitle = element.attr('nodeName');
+        let objectId = element.attr('objectId');
+        let mnNodeType = element.attr('nodeType');
+
+        if (mnNodeTitle) {
+          element
+            .append('text')
+            .text(mnNodeTitle)
+            .attr('dy', () => {
+              if (svgElement.nodeType === 'object') {
+                return 38;
+              } else if (svgElement.nodeType === 'collAssoc') {
+                return 26;
+              } else if (svgElement.nodeType === 'subAssoc') {
+                return 24;
+              }
+            })
+            .attr('fill', mnNodeType === 'object' ? '#676767' : '#565656')
+            .attr('font-size', mnNodeType === 'object' ? 18 : 13)
+            .attr('letter-spacing', mnNodeType === 'object' ? -2 : -0.3)
+            .attr('font-weight', mnNodeType === 'object' ? 'bolder' : 400)
+            .style('cursor', mnNodeType === 'object' ? 'default' : 'pointer');
+        }
+
+        if (objectId) {
+          element
+            .append('text')
+            .text(objectId)
+            .attr('dy', 52)
+            .attr('dx', 5)
+            .attr('fill', '#676767')
+            .attr('font-size', 11)
+            .attr('font-weight', 'lighter')
+            .style('cursor', 'default');
+        }
+      });
 
     // set opacity for old nodes
     this.svg
@@ -385,8 +451,6 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
     // new labels
     this.svg
       .selectAll('.nodelabelNew')
-      .attr('stroke', '#676767')
-      .text(d => d.name)
       .on('click', d => {
         if (d.clickable) {
           this.chartClick(d, d.nodeType);
@@ -398,7 +462,7 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
     this.svg
       .selectAll('.nodelabelOld')
       .attr('stroke', 'lightgray')
-      .text(d => d.name)
+      .attr('stroke-width', 0.8)
       .on('click', d => {
         if (d.clickable) {
           this.chartClick(d, d.nodeType);
@@ -443,11 +507,15 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
           .attr('cx', d => d.x)
           .attr('cy', d => d.y)
           .attr('transform', d => 'translate(' + d.x + ',' + d.y + ')');
+        this.nodelabelsInner
+          .attr('x', d => d.x)
+          .attr('y', d => d.y);
         this.nodelabels
           .attr('x', d => d.x)
           .attr('y', d => d.y);
       });
     this.nodes.call(this.force.drag);
+    this.nodelabelsInner.call(this.force.drag);
   }
 
   private _addToNodes(assocListIndex?: number) {
@@ -468,7 +536,9 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
       state: this._stateNew,
       color: this._colorizeMe(this._lastInHistArr().TYPE),
       parentNode: this.dataset.nodes[this._sourceNode] || null,
-      genID: this._lastInHistArr().genID
+      genID: this._lastInHistArr().genID,
+      objectId: this._lastInHistArr().OBJECT,
+      type: this.historyObj.TYPE.charAt(0)
     });
 
     // nodeCollection
