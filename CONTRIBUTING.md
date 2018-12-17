@@ -49,6 +49,11 @@ export const AdapterSettings = {
 }
 ```
 
+# Pull Request
+
+Once your change is ready, make a PR to the github repo: https://github.com/Boemska/metanav
+
+Remember to update the version attribute in `package.json`!
 
 # Documentation
 
