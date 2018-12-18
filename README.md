@@ -30,20 +30,20 @@ The latest stable version of Meta Navigator is always available as a github [rel
 
 ### 2 - Implement the backend
 
-Unzip the first package and import the `import.spk` file using SAS Management Console (or batch tools) to a preferred location in metadata.  Secure this application by setting an ACT as appropriate on the parent folder.  Take note of the folder root in which these STPs were deployed (it's used in the following configuration step).
+Unzip metanavigator.zip and import the `import.spk` file using SAS Management Console (or batch tools) to a preferred location in metadata.  Secure this application by setting an ACT on the parent folder with only ReadMetadata selected and apply it to the parent folder for the appropriate Users/Groups.  Take note of the folder root in which these STPs were deployed (it's used in the following configuration step).
 
 ### 3 - Update the h54s config file
 
-Inside the `metanav` folder there is a configuration file called `h54sConfig.json`.  Within this, set the `metadataRoot` value to the folder root identified in the previous step.
+Inside the `metanavigator` folder there is a configuration file called `h54sConfig.json`.  Open this with your favourite text editor and set the `metadataRoot` value to the SAS metadata location you've created in the previous step.
 
 ### 4 - Deploy the frontend
 
-Copy the entire `metanav` folder (with the modifed `h54sConfig.json`) to your web server.  For 9.4 this location would be `/opt/sas94/config/Lev1/Web/WebServer/htdocs`.
+Copy the entire `metanavigator` folder (with the modifed `h54sConfig.json`) to your web server.  The relative path for this location would be `../Config/Lev1/Web/WebServer/htdocs` within the root SAS installation directory.
 
 
 ### 5 - Profit
 
-Your app is now live!  Simply navigate to YOURHOST.DOMAIN:8080/metanav (where `YOURHOST` is the hostname of your SAS Web Server, `8080` is your port, and `/metanav` is the location in which the files were loaded in step 3).
+Your app is now live!  Simply navigate to YOURHOST.DOMAIN:8080/metanavigator (where `YOURHOST` is the hostname of your SAS Web Server, `8080` is your port, and `/metanavigator` is the location in which the files were loaded in step 3).
 
 ## Build Instructions
 
