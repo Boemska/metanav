@@ -26,7 +26,7 @@ There are five steps to getting the Meta Navigator up and running in your enviro
 
 ### 1 - Download the Source
 
-The latest stable version of Meta Navigator is always available as a github [release](https://github.com/Boemska/meta-navigator/releases).  If you prefer to build from source, follow the [Build Instructions](https://github.com/Boemska/meta-navigator/blob/master/CONTRIBUTING.md).
+The latest stable version of Meta Navigator is always available as a github [release](https://github.com/Boemska/metanav/releases).  If you prefer to build from source, follow the [Build Instructions](https://github.com/Boemska/meta-navigator/blob/master/CONTRIBUTING.md).
 
 ### 2 - Implement the backend
 
