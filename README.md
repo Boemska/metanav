@@ -30,7 +30,7 @@ The latest stable version of Meta Navigator is always available as a github [rel
 
 ### 2 - Implement the backend
 
-Unzip the package and import the `import.spk` file using SAS Management Console (or batch tools) to a preferred location in metadata.  Secure this application by setting an ACT as appropriate on the parent folder.  Take note of the folder root in which these STPs were deployed (it's used in the following configuration step).
+Unzip the first package and import the `import.spk` file using SAS Management Console (or batch tools) to a preferred location in metadata.  Secure this application by setting an ACT as appropriate on the parent folder.  Take note of the folder root in which these STPs were deployed (it's used in the following configuration step).
 
 ### 3 - Update the h54s config file
 
