@@ -9,7 +9,7 @@
   .tb1_ch0 {
     #divMain {
       position: relative;
-      height: 100%;
+      height: calc(100vh - 122px);
       top: 25px;
       left: 5px;
       right: 5px;
@@ -27,13 +27,11 @@
     #chart {
       position: relative;
       width: calc(100% - 5px);
-      height: calc(100vh - 200px);
+      height: calc(100vh - 122px);
       top: 25px;
       left: 5px;
       right: 5px;
       bottom: 25px;
-      border: 1px solid #cccccc;
-      border-radius: 3px;
     }
   } // table||network
   .tb0_ch0 {
@@ -41,7 +39,7 @@
       display: inline-block;
       position: relative;
       width: calc( 50% - 5px);
-      height: calc(100vh - 200px);
+      height: calc(100vh - 122px);
       top: 25px;
       left: 5px;
       bottom: 25px;
@@ -51,13 +49,12 @@
       display: inline-block;
       position: relative;
       width: calc(50% - 10px);
-      height: calc(100vh - 200px);
-      top: 24px;
+      height: calc(100vh - 122px);
+      top: 22px;
       left: 10px;
       right: 5px;
       bottom: 25px;
-      border: 1px solid #cccccc;
-      border-radius: 3px;
+      border-left: 1px solid #cccccc;
     }
   } // table/network
   .tb1_ch1 {
@@ -73,13 +70,12 @@
     #chart {
       position: relative;
       width: calc(100% - 5px);
-      height: calc(50vh - 120px);
-      top: 46px;
+      height: calc(50vh - 35px);
+      top: 60px;
       left: 5px;
       right: 5px;
       bottom: 25px;
-      border: 1px solid #cccccc;
-      border-radius: 3px;
+      border-top: 1px solid #cccccc;
     }
   }
 }
@@ -115,8 +111,6 @@
       left: 20px;
       right: 20px;
       bottom: 25px;
-      border: 1px solid #cccccc;
-      border-radius: 3px;
     }
   } // table||network
   .tb0_ch0 {
@@ -134,8 +128,6 @@
       left: calc(50% + 25px);
       right: 20px;
       bottom: 25px;
-      border: 1px solid #cccccc;
-      border-radius: 3px;
     }
   } // table/network
   .tb1_ch1 {
@@ -153,8 +145,6 @@
       left: 20px;
       right: 20px;
       bottom: 25px;
-      border: 1px solid #cccccc;
-      border-radius: 3px;
     }
   }
 }
@@ -298,5 +288,5 @@ a:hover {
 
 #container>div {
   margin-top: -24px;
-  margin-bottom: 12px
+  margin-bottom: 0;
 }

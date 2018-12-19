@@ -18,6 +18,16 @@
   z-index: 101;
 }
 
+.nav {
+  box-shadow: none !important;
+  padding-left: 4px !important;
+}
+
+.main-container .content-container .content-area {
+  overflow-y: hidden !important;
+}
+
+
 @media (min-width: 769px) {
   .d-md-none {
     display: none !important;
@@ -45,6 +55,7 @@
     display: -ms-inline-flexbox !important;
     display: inline-flex !important;
   }
+
 }
 
 @media (max-width: 768px) {
@@ -58,7 +69,8 @@
   background: #ececec;
 }
 
-.main-container .header, .main-container header {
+.main-container .header,
+.main-container header {
   -ms-flex: 0 0 2.5rem;
   -webkit-box-flex: 0;
   flex: 0 0 2.5rem;
@@ -100,7 +112,8 @@
   flex-flow: column !important;
 }
 
-clr-icon.is-inverse, clr-icon.is-white {
+clr-icon.is-inverse,
+clr-icon.is-white {
   fill: #474747 !important;
 }
 
