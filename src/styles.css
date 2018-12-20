@@ -23,11 +23,6 @@
   padding-left: 4px !important;
 }
 
-.main-container .content-container .content-area {
-  overflow-y: hidden !important;
-}
-
-
 @media (min-width: 769px) {
   .d-md-none {
     display: none !important;
