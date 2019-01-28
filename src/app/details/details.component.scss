@@ -9,7 +9,7 @@
   .tb1_ch0 {
     #divMain {
       position: relative;
-      height: calc(100vh - 122px);
+      height: calc(100vh - 151px);
       top: 25px;
       left: 5px;
       right: 5px;
@@ -27,7 +27,7 @@
     #chart {
       position: relative;
       width: calc(100% - 5px);
-      height: calc(100vh - 130px);
+      height: calc(100vh - 151px);
       top: 25px;
       left: 5px;
       right: 5px;
@@ -39,7 +39,7 @@
       display: inline-block;
       position: relative;
       width: calc( 50% - 5px);
-      height: calc(100vh - 130px);
+      height: calc(100vh - 151px);
       top: 25px;
       left: 5px;
       bottom: 25px;
@@ -49,7 +49,7 @@
       display: inline-block;
       position: relative;
       width: calc(50% - 10px);
-      height: calc(100vh - 130px);
+      height: calc(100vh - 151px);
       top: 25px;
       left: 10px;
       right: 5px;
@@ -61,7 +61,7 @@
     #divMain {
       position: relative;
       width: calc(100% - 10px);
-      height: calc(50vh - 100px);
+      height: calc(50vh - 116px);
       margin-left: 5px;
       margin-right: 5px;
       top: 25px;
@@ -106,51 +106,58 @@
       display: none;
     }
     #chart {
-      position: fixed;
-      top: 145px;
-      left: 20px;
-      right: 20px;
+      position: relative;
+      width: calc(100% - 5px);
+      height: calc(100vh - 151px);
+      top: 25px;
+      left: 5px;
+      right: 5px;
       bottom: 25px;
     }
   } // table||network
   .tb0_ch0 {
     #divMain {
-      position: fixed;
-      top: 145px;
-      left: 20px;
-      right: calc(50% - 15px);
+      display: inline-block;
+      position: relative;
+      width: calc( 50% - 5px);
+      height: calc(100vh - 151px);
+      top: 25px;
+      left: 5px;
       bottom: 25px;
       overflow-y: auto;
     }
     #chart {
-      position: fixed;
-      top: 145px;
-      left: calc(50% + 25px);
-      right: 20px;
+      display: inline-block;
+      position: relative;
+      width: calc(50% - 10px);
+      height: calc(100vh - 151px);
+      top: 25px;
+      left: 10px;
+      right: 5px;
       bottom: 25px;
     }
   } // table/network
   .tb1_ch1 {
     #divMain {
       position: relative;
-      margin-left: -4px;
-      margin-right: -4px;
+      width: calc(100% - 10px);
+      height: calc(50vh - 116px);
+      margin-left: 5px;
+      margin-right: 5px;
       top: 25px;
-      max-height: 50vh;
       overflow-y: auto;
     }
     #chart {
-      position: fixed;
-      top: calc(50vh + 160px);
-      left: 20px;
-      right: 20px;
+      position: relative;
+      width: calc(100% - 5px);
+      height: calc(50vh - 40px);
+      top: 60px;
+      left: 5px;
+      right: 5px;
       bottom: 25px;
+      border-top: 1px solid #cccccc;
     }
   }
-}
-
-.svg {
-  overflow: auto;
 }
 
 .tbl {
@@ -290,3 +297,15 @@ a:hover {
   margin-top: -24px;
   margin-bottom: 0;
 }
+
+:host /deep/
+.modal-dialog.modal-sm {
+  width: 15rem;
+}
+
+.modal-dialog .modal-content {
+  padding: 0.1rem 1rem 1rem 1rem;
+}
+
+
+ 

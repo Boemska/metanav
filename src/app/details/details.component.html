@@ -2,20 +2,20 @@
   <div>
     <clr-tabs>
       <clr-tab>
-        <button clrTabLink (click)="setViewType('tb1_ch0')" (click)="reDrawGraph()">Table View</button>
-        <clr-tab-content *clrIfActive="true"> </clr-tab-content>
-      </clr-tab>
-      <clr-tab>
-        <button clrTabLink (click)="setViewType('tb0_ch1')" (click)="reDrawGraph()">Network View</button>
+        <button id="firstTab" clrTabLink (click)="setViewType('tb1_ch0')">Table View</button>
         <clr-tab-content *clrIfActive> </clr-tab-content>
       </clr-tab>
       <clr-tab>
-        <button clrTabLink (click)="setViewType('tb0_ch0')" (click)="reDrawGraph()">Table ||
-          Network</button>
+        <button clrTabLink (click)="setViewType('tb0_ch1'); deactivateTableViewTab()">Network View</button>
         <clr-tab-content *clrIfActive> </clr-tab-content>
       </clr-tab>
       <clr-tab>
-        <button clrTabLink (click)="setViewType('tb1_ch1')" (click)="reDrawGraph()">Table / Network</button>
+        <button clrTabLink (click)="setViewType('tb0_ch0'); deactivateTableViewTab()">Table || Network
+        </button>
+        <clr-tab-content *clrIfActive> </clr-tab-content>
+      </clr-tab>
+      <clr-tab>
+        <button clrTabLink (click)="setViewType('tb1_ch1'); deactivateTableViewTab()">Table / Network</button>
         <clr-tab-content *clrIfActive> </clr-tab-content>
       </clr-tab>
     </clr-tabs>
@@ -41,7 +41,9 @@
           </div>
 
         </div>
-        <span style="margin-left: 10px;"><b>{{historyItem.ASC}}</b></span>
+        <span style="margin-left: 10px;">
+          <b>{{historyItem.ASC}}</b>
+        </span>
       </div>
 
       <div style="padding-right:10px;">
@@ -57,10 +59,14 @@
               <div class="headerRow">
                 <div class="headerColumn">
                   <span class="headerName">{{historyItem.NAME}}</span>
-                  <span><a href="#{{historyItem.URL}}" target="_blank" class="headerLink">{{historyItem.OBJECT}}</a></span>
+                  <span>
+                    <a href="#{{historyItem.URL}}" target="_blank" class="headerLink">{{historyItem.OBJECT}}</a>
+                  </span>
                 </div>
                 <div class="headerType">
-                  <span><a href="#{{historyItem.typeURL}}" target="_blank" class="headerLink">{{historyItem.TYPE}}</a></span>
+                  <span>
+                    <a href="#{{historyItem.typeURL}}" target="_blank" class="headerLink">{{historyItem.TYPE}}</a>
+                  </span>
                 </div>
               </div>
             </div>
@@ -80,9 +86,8 @@
                           <clr-dg-column [clrDgField]="'ASSOCURI'">ASSOCURI</clr-dg-column>
                           <clr-dg-column [clrDgField]="'NAME'">NAME</clr-dg-column>
 
-                          <clr-dg-row *clrDgItems="let assocData of detailArray[i].ASSOC; let selectedAssoc=index;"
-                            (click)="
-                                removeHistoryAfter(i);
+                          <clr-dg-row *clrDgItems="let assocData of detailArray[i].ASSOC; let selectedAssoc=index;" (click)="
+                                removeHistoryAfter(i);                         
                                 updateProperties(
                                   assocData.ASSOC,
                                   selectedAssoc,
@@ -91,8 +96,7 @@
                                   );
                                 disableClick(assocData.genID);
                                 goToDetails(assocData.ASSOCURI);
-                              "
-                            style="cursor: pointer;">
+                              " style="cursor: pointer;">
 
                             <clr-dg-cell>{{assocData.ASSOC}}</clr-dg-cell>
                             <clr-dg-cell>{{assocData.ASSOCURI}}</clr-dg-cell>
@@ -101,8 +105,7 @@
                           </clr-dg-row>
                           <clr-dg-footer>
                             <clr-dg-pagination #pagination1 [clrDgPageSize]="15">
-                              {{pagination1.firstItem + 1}} - {{pagination1.lastItem + 1}} of
-                              {{pagination1.totalItems}} Associations
+                              {{pagination1.firstItem + 1}} - {{pagination1.lastItem + 1}} of {{pagination1.totalItems}} Associations
                             </clr-dg-pagination>
                           </clr-dg-footer>
                         </clr-datagrid>
@@ -130,8 +133,7 @@
                           </clr-dg-row>
                           <clr-dg-footer>
                             <clr-dg-pagination #pagination2 [clrDgPageSize]="15">
-                              {{pagination2.firstItem + 1}} - {{pagination2.lastItem + 1}} of
-                              {{pagination2.totalItems}} Attributes
+                              {{pagination2.firstItem + 1}} - {{pagination2.lastItem + 1}} of {{pagination2.totalItems}} Attributes
                             </clr-dg-pagination>
                           </clr-dg-footer>
                         </clr-datagrid>
@@ -147,5 +149,12 @@
       </div>
     </div>
   </div>
-  <div (window:resize)="onResize($event)" id="chart"></div>
-</div>
+  <clr-modal [clrModalSize]="'sm'" [(clrModalOpen)]="displayAlert">
+    <p class="modal-title">Showing 15 of {{subAssocNumber}} nodes</p>
+    <div class="modal-body">
+      <span (click)="setViewType('tb1_ch0'); activateTableViewTab(); displayAlert=false" style="cursor:pointer">
+        Click here to open associations in Table View</span>
+    </div>
+  </clr-modal>
+  <svg id="chart"></svg>
+</div> 

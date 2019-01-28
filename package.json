@@ -1,6 +1,6 @@
 {
   "name": "meta-navigator",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "",
   "angular-cli": {},
   "scripts": {
@@ -23,7 +23,6 @@
     "@angular/platform-browser": "^4.4.7",
     "@angular/platform-browser-dynamic": "^4.4.7",
     "@angular/router": "^4.4.7",
-    "@types/d3": "^3.5.41",
     "@webcomponents/custom-elements": "^1.2.0",
     "ajv": "^6.5.5",
     "clarity": "^1.0.2",
@@ -32,7 +31,7 @@
     "clarity-ui": "^0.10.23",
     "color-hash": "^1.0.3",
     "core-js": "^2.5.3",
-    "d3": "^3.5.17",
+    "d3": "^5.7.0",
     "git-describe": "^4.0.3",
     "h54s": "git+https://github.com/Boemska/h54s.git#development",
     "http-proxy-agent": "^2.1.0",
@@ -51,6 +50,7 @@
     "@angular/cli": "^1.7.4",
     "@angular/compiler-cli": "^4.4.7",
     "@types/core-js": "^2.5.0",
+    "@types/d3": "^5.0.1",
     "@types/jasmine": "^2.8.11",
     "@types/node": "^10.12.9",
     "codelyzer": "^4.4.4",

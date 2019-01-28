@@ -30,15 +30,13 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
   public sidenavToggleMessage: string;
   private _firstStart: boolean = true;
   private _sidenavToggle: Subscription;
+  public displayAlert: boolean = false;
+  public alertRemovingTimer: any;
+  public activeTabButton: Element;
 
   // d3js
   public dataset: any = { nodes: [], edges: [] };
-  public svg: any;
-  public nodes: any;
-  public edges: any;
-  public nodelabels: any;
-  public nodelabelsInner: any;
-  public force: any;
+  public simulation: any;
   public backToExistingNode: boolean = false;
   public parentNode: any;
   private _indexInNodesArray: number;
@@ -52,6 +50,22 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
   private readonly _collAssocType: string = 'collAssoc';
   private readonly _stateNew: string = 'new';
   private readonly _stateOld: string = 'old';
+  public nodeGroup: any;
+  public linkGroup: any;
+  public textGroup: any;
+  public textGroupTitles: any;
+  public nodeElements: any;
+  public linkElements: any;
+  public textElements: any;
+  public textElementsTitles: any;
+  public d3StoppingTimer: any;
+  public linkForce: d3.ForceLink<{}, d3.SimulationLinkDatum<{}>>;
+  public dragDrop: d3.DragBehavior<Element, {}, {} | d3.SubjectPosition>;
+  public clickedSubAssoc: any;
+  public clickedSubAssocY: any;
+  public clickedSubAssocX: any;
+  public subAssocNumber: any;
+  private readonly offsetForOpening = 30;
 
   constructor(
     private _metanavService: MetanavService,
@@ -60,12 +74,13 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
     this._sidenavToggle = this._metanavService.getSidenavToggleState().subscribe(
       message => {
         this.sidenavToggleMessage = message;
-        this.reDrawGraph();
+        this.updateGraph();
       });
   }
 
   public async ngAfterViewInit() {
     if (this._firstStart) {
+      this.initializeGraph();
       this.onUrlChanged();
       this._firstStart = false;
     }
@@ -74,18 +89,7 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
   public async onUrlChanged() {
     this.url = window.location.href.split('#').pop();
     await this._loadData();
-    this.reDrawGraph();
-  }
-
-  public reDrawGraph() {
-    setTimeout(() => {
-      this.onResize();
-    }, 0);
-  }
-
-  public onResize(event?) {
-    this.disposeGraph();
-    this.drawGraph();
+    this.updateGraph();
   }
 
   public removeHistoryAfter(i: number) {
@@ -110,15 +114,27 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
     this.onUrlChanged();
   }
 
-  public disposeGraph() {
-    document.getElementById('chart').innerHTML = '';
-    if (this.force) {
-      this.force.stop();
+  public setViewType(viewType: string) {
+    this.viewType = viewType;
+    if (this.activeTabButton) {
+      let ariaSelected = this.activeTabButton.attributes[4];
+      if (ariaSelected.value === 'true') {
+        this.activeTabButton.className = 'btn btn-link nav-link nav-item active';
+      }
     }
   }
 
-  public setViewType(viewType: string) {
-    this.viewType = viewType;
+  public activateTableViewTab() {
+    this.activeTabButton = document.getElementsByClassName('btn btn-link nav-link nav-item active')[0];
+    this.activeTabButton.className = 'btn btn-link nav-link nav-item';
+
+    let tableViewTabButton = document.getElementById('firstTab');
+    tableViewTabButton.className = 'btn btn-link nav-link nav-item active';
+  }
+
+  public deactivateTableViewTab() {
+    let tableViewTabButton = document.getElementById('firstTab');
+    tableViewTabButton.className = 'btn btn-link nav-link nav-item';
   }
 
   public disableClick(assocID: string) {
@@ -156,28 +172,48 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
     d3Item.clickable = false;
   }
 
-  private pushCollapsedAssociations(assocArr: any, parentNode: any, nodeIndex: number) {
+  private pushCollapsedAssociations(dataObject) {
+    let assocArry = dataObject.assocArry;
+    let nodeIndex = dataObject.index;
 
     // small circles - associations
-    this.parentNode = parentNode;
+    this.parentNode = dataObject.parentNode;
     if (!this._subAssocParent) {
       this._subAssocParent = this.dataset.nodes.length;
     }
 
-    for (let i = 0; i < assocArr.groupAssoc.length; i++) {
-      const e = assocArr.groupAssoc[i];
+    let assocCount;
+    if (assocArry.groupAssoc.length > 15) {
+      assocCount = 15;
+    } else {
+      assocCount = assocArry.groupAssoc.length;
+    }
+
+    for (let i = 0; i < assocCount; i++) {
+
+      const e = assocArry.groupAssoc[i];
+      let newX = 0;
+      let newY = 0;
+      let diffX = this.parentNode.x - dataObject.x;
+      let diffY = this.parentNode.y - dataObject.y;
+      newX = this.calculateStartingXPosition(diffX, diffY, dataObject.x);
+      newY = this.calculateStartingYPosition(diffX, diffY, dataObject.y);
+
       let subAssociation = {
         name: e.NAME,
-        assocName: assocArr.name,
+        assocName: assocArry.name,
         nodeType: this._subAssocType,
         state: this._stateNew,
         nodeURI: e.ASSOCURI,
         indexAssoc: i,
         clickable: true,
-        numbOfAssoc: assocArr.groupAssoc.length,
+        numbOfAssoc: assocArry.groupAssoc.length,
         color: this._colorizeMe(e.NAME),
         parentNode: this.dataset.nodes[nodeIndex],
-        genID: assocArr.genID
+        genID: assocArry.genID,
+        d3Id: Math.random().toString(),
+        x: newX,
+        y: newY
       };
 
       this.dataset.nodes.push(subAssociation);
@@ -190,7 +226,35 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  private _collapseAssociations(inputArray: Array<any>): any {
+  private calculateStartingXPosition(diffX: number, diffY: number, x: any) {
+    let newX: number;
+    if (diffX > 0 && diffY > 0) {
+      newX = x - this.offsetForOpening;
+    } else if (diffX < 0 && diffY > 0) {
+      newX = x + this.offsetForOpening;
+    } else if (diffX > 0 && diffY < 0) {
+      newX = x - this.offsetForOpening;
+    } else {
+      newX = x + this.offsetForOpening;
+    }
+    return newX;
+  }
+
+  private calculateStartingYPosition(diffX: number, diffY: number, y: any) {
+    let newY: number;
+    if (diffX > 0 && diffY > 0) {
+      newY = y - this.offsetForOpening;
+    } else if (diffX < 0 && diffY > 0) {
+      newY = y - this.offsetForOpening;
+    } else if (diffX > 0 && diffY < 0) {
+      newY = y + this.offsetForOpening;
+    } else {
+      newY = y + this.offsetForOpening;
+    }
+    return newY;
+  }
+
+  private _createGroupedAssociations(inputArray: Array<any>): any {
     let countsAcc = inputArray.reduce((acc, el) => {
       let key = el.ASSOC;
       if (!acc.hasOwnProperty(key)) {
@@ -204,7 +268,7 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
       return {
         name: el,
         groupAssoc: countsAcc[el],
-        genID: Math.random()
+        genID: Math.random().toString()
       };
     });
     return collapsedAssoc;
@@ -224,7 +288,7 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
       .forEach(e => e.target.state = this._stateNew);
   }
 
-  private _connectToExistingNode(sourceNode: any, targetNode: any) {
+  private _createLinkForNodes(sourceNode: any, targetNode: any) {
     this.dataset.edges.push({
       source: sourceNode,
       target: targetNode
@@ -267,215 +331,100 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
 
   public chartClick(d: any, nodeType: any) {
     if (nodeType === this._subAssocType) {
+      this.clickedSubAssoc = d;
+      this.clickedSubAssocX = d.x;
+      this.clickedSubAssocY = d.y;
       this._removeSubAssociaction(d.index);
       this.updateProperties(d.assocName, d.numbOfAssoc, d.indexAssoc, d.parentNode);
 
       let searchResult = this._getNodeIndexById(this._metanavService.getLastValueFromString(d.nodeURI));
       if (searchResult > -1) {
-        this._connectToExistingNode(d.parentNode, this.dataset.nodes[searchResult]);
+        this._createLinkForNodes(d.parentNode, this.dataset.nodes[searchResult]);
         this._moveToOld(this.dataset.nodes);
         this._reactivateNode(this.dataset.nodes[searchResult]);
         this.backToExistingNode = true;
       }
       this.goToDetails(d.nodeURI);
-    } else if (nodeType === this._collAssocType) {
-      this.disposeGraph();
-      this.pushCollapsedAssociations(d.assocArry, d.parentNode, d.index);
       this._disableClick(d);
-      this.drawGraph();
+    } else if (nodeType === this._collAssocType) {
+      this.pushCollapsedAssociations(d);
+      this.subAssocNumber = d.assocArry.groupAssoc.length;
+      this._disableClick(d);
+      this.updateGraph();
+      if (d.assocArry.groupAssoc.length > 15) {
+        this.displayAlert = true;
+      }
+
+      if (this.alertRemovingTimer) {
+        clearTimeout(this.alertRemovingTimer);
+      }
+      this.alertRemovingTimer = setTimeout(() => {
+        this.displayAlert = false;
+      }, 5000);
     }
   }
 
-  public drawGraph() {
+  public initializeGraph() {
 
-    let chartDiv = document.getElementById('chart');
-    let nodes = this.dataset.nodes;
-    let edges = this.dataset.edges;
-    let nodesDistance = 100;
-    let w = chartDiv.clientWidth;
-    let h = chartDiv.clientHeight;
+    let w = window.innerWidth / 1.9;
+    let h = window.innerHeight / 1.5;
 
-    this.svg = d3
-      .select(chartDiv)
-      .append('svg')
-      .attr('width', w)
-      .attr('height', h);
+    let zoom = d3.zoom()
+      .scaleExtent([0.1, 10])
+      .on('zoom', () =>
+        svg.attr('transform', d3.event.transform));
 
-    // set edges
-    this.edges = this.svg
-      .selectAll('line')
-      .data(edges)
-      .enter()
-      .append('line')
-      .attr('marker-end', 'url(#arrowhead)')
-      .style('stroke', '#ccc')
-      .style('pointer-events', 'none');
+    let svg = d3.select('svg#chart')
+      .attr('viewBox', '0 0 ' + w + ' ' + h)
+      .call(zoom)
+      .append('g');
 
-    // set node type
-    this.nodes = this.svg
-      .selectAll('circle' || 'rect')
-      .data(nodes)
-      .enter()
-      .append('svg')
-      .attr({
-        'class': d => d.state === this._stateNew ? this._stateNew : this._stateOld
+    this.linkGroup = svg.append('g').attr('class', 'links');
+    this.nodeGroup = svg.append('g').attr('class', 'nodes');
+    this.textGroup = svg.append('g').attr('class', 'innerLabels');
+    this.textGroupTitles = svg.append('g').attr('class', 'labels');
+
+    let linkForce = d3
+      .forceLink()
+      .id((link: any) => link.id)
+      .strength(0.4)
+      .distance(70);
+
+    this.simulation = d3.forceSimulation()
+      .force("link", linkForce)
+      .force('charge', d3.forceManyBody().strength(-80))
+      .force('center', d3.forceCenter(w / 2, h / 2))
+      .velocityDecay(0.25)
+      .alphaMin(0.009)
+      .alphaDecay(0.08);
+
+    this.dragDrop = d3.drag()
+      .on('start', (node: any) => {
+        node.fx = node.x;
+        node.fy = node.y;
       })
-      .append('g')
-      .attr({
-        'class': d => d.nodeType === this._objectType ?
-          this._objectType : d.nodeType === this._collAssocType ?
-            this._collAssocType : this._subAssocType,
+      .on('drag', (node: any) => {
+        this.simulation.alphaTarget(0.9).restart();
+        node.fx = d3.event.x;
+        node.fy = d3.event.y;
+      })
+      .on('end', (node: any) => {
+        if (!d3.event.active) {
+          this.simulation.alphaTarget(0);
+        }
+        node.fx = null;
+        node.fy = null;
       });
+    this.updateGraph();
+  }
 
-    // set node labels as new or old
-    this.nodelabelsInner = this.svg
-      .selectAll('nodelabelNew' || 'nodelabelOld')
-      .data(nodes)
-      .enter()
-      .append('text')
-      .text(d => {
-        if (d.nodeType === 'object') {
-          return d.type;
-        } else if (d.nodeType === 'collAssoc') {
-          return d.name.substring(0, 2);
-        }
-      })
-      .attr('dy', d => d.nodeType === 'object' ? 7 : 4)
-      .attr('font-size', d => d.nodeType === 'object' ? 20 : 12)
-      .attr('fill', 'white')
-      .style("text-anchor", "middle")
-      .attr('cursor', d => d.nodeType === 'object' ? 'default' : 'pointer')
-      .on('click', d => {
-        if (d.clickable) {
-          this.chartClick(d, d.nodeType);
-        }
-      });
+  public updateGraph() {
 
-    this.nodelabels = this.svg
-      .selectAll('nodelabelNew' || 'nodelabelOld')
-      .data(nodes)
-      .enter()
-      .append('svg')
-      .attr('class', d => d.state === this._stateNew ? 'nodelabelNew' : 'nodelabelOld')
-      .attr('nodeName', d => d.nodeType === 'object' ? d.name.toLowerCase() : d.name)
-      .attr('objectId', d => d.objectId)
-      .attr('nodeType', d => d.nodeType);
-
-
-    d3.selectAll('svg')
-      .each(function (svgElement) {
-        let element = d3.select(this);
-
-        let mnNodeTitle = element.attr('nodeName');
-        let objectId = element.attr('objectId');
-        let mnNodeType = element.attr('nodeType');
-
-        if (mnNodeTitle) {
-          element
-            .append('text')
-            .text(mnNodeTitle)
-            .attr('dy', () => {
-              if (svgElement.nodeType === 'object') {
-                return 38;
-              } else if (svgElement.nodeType === 'collAssoc') {
-                return 26;
-              } else if (svgElement.nodeType === 'subAssoc') {
-                return 24;
-              }
-            })
-            .attr('fill', mnNodeType === 'object' ? '#676767' : '#565656')
-            .attr('font-size', mnNodeType === 'object' ? 18 : 13)
-            .attr('letter-spacing', mnNodeType === 'object' ? -2 : -0.3)
-            .attr('font-weight', mnNodeType === 'object' ? 'bolder' : 400)
-            .style('cursor', mnNodeType === 'object' ? 'default' : 'pointer');
-        }
-
-        if (objectId) {
-          element
-            .append('text')
-            .text(objectId)
-            .attr('dy', 52)
-            .attr('dx', 5)
-            .attr('fill', '#676767')
-            .attr('font-size', 11)
-            .attr('font-weight', 'lighter')
-            .style('cursor', 'default');
-        }
-      });
-
-    // set opacity for old nodes
-    this.svg
-      .selectAll('.' + this._stateOld)
-      .transition()
-      .style("opacity", 1); // 1 - no opacity
-
-    // Objects (Big circle)
-    this.svg
-      .selectAll('.' + this._objectType)
-      .append('circle')
-      .attr('class', 'circle')
-      .attr('r', 24)
-      .style('fill', d => d.color);
-
-    // Collapsed Associations (RECT)
-    this.svg
-      .selectAll('.' + this._collAssocType)
-      .append('rect')
-      .attr('height', 24)
-      .attr('width', 24)
-      .attr('x', d => -12)
-      .attr('y', d => -12)
-      .attr('class', 'rect')
-      .style('fill', d => d.color)
-      .on('click', d => {
-        if (d.clickable) {
-          this.chartClick(d, d.nodeType);
-        }
-      })
-      .style('cursor', 'pointer');
-
-    // Sub Association (small circle)
-    this.svg
-      .selectAll('.' + this._subAssocType)
-      .append('circle')
-      .attr('class', 'circle')
-      .attr('r', 10)
-      .style('fill', d => d.color)
-      .on('click', d => {
-        if (d.clickable) {
-          this.chartClick(d, d.nodeType);
-        }
-      })
-      .style('cursor', 'pointer');
-
-    // new labels
-    this.svg
-      .selectAll('.nodelabelNew')
-      .on('click', d => {
-        if (d.clickable) {
-          this.chartClick(d, d.nodeType);
-        }
-      })
-      .style('cursor', 'pointer');
-
-    // old labels
-    this.svg
-      .selectAll('.nodelabelOld')
-      .attr('stroke', 'lightgray')
-      .attr('stroke-width', 0.8)
-      .on('click', d => {
-        if (d.clickable) {
-          this.chartClick(d, d.nodeType);
-        }
-      })
-      .style('cursor', 'pointer');
-
-    // arrow
-    this.svg
+    this.linkGroup
       .append('defs')
       .append('marker')
       .attr('id', 'arrowhead')
-      .attr('refX', 60)
+      .attr('refX', 40)
       .attr('refY', 0)
       .attr('viewBox', '-0 -5 10 10')
       .attr('orient', 'auto')
@@ -483,39 +432,175 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
       .attr('markerHeight', 10)
       .attr('xoverflow', 'visible')
       .append('path')
-      .attr('d', 'M 0,-5 L 10,0 L 0,5')
+      .attr('d', 'M 0,-3 L 10,0 L 0,3')
       .attr('fill', '#ccc')
       .attr('stroke', '#ccc');
 
-    this.force = d3.layout
-      .force()
-      .size([w, h])
-      .nodes(nodes)
-      .links(edges)
-      .linkDistance(nodesDistance)
-      .charge(-1000)
-      .start();
+    this.linkElements = this.linkGroup.selectAll('line')
+      .data(this.dataset.edges, link => link.target.d3Id + link.source.d3Id);
+    this.linkElements.exit().remove();
 
-    this.force
-      .on('tick', () => {
-        this.edges
-          .attr('x1', d => d.source.x)
-          .attr('y1', d => d.source.y)
-          .attr('x2', d => d.target.x)
-          .attr('y2', d => d.target.y);
-        this.nodes
-          .attr('cx', d => d.x)
-          .attr('cy', d => d.y)
-          .attr('transform', d => 'translate(' + d.x + ',' + d.y + ')');
-        this.nodelabelsInner
-          .attr('x', d => d.x)
-          .attr('y', d => d.y);
-        this.nodelabels
-          .attr('x', d => d.x)
-          .attr('y', d => d.y);
+    let linkEnter = this.linkElements
+      .enter()
+      .append('line')
+      .attr('marker-end', 'url(#arrowhead)')
+      .style('stroke', '#ccc')
+      .style('pointer-events', 'none');
+
+    this.linkElements = linkEnter.merge(this.linkElements);
+
+    let symbolGenerator = d3.symbol()
+      .type(d => {
+        if (d.nodeType === 'object') {
+          return d3.symbolCircle;
+        } else if (d.nodeType === 'collAssoc') {
+          return d3.symbolSquare;
+        } else if (d.nodeType === 'subAssoc') {
+          return d3.symbolCircle;
+        }
+      })
+      .size(d => {
+        if (d.nodeType === 'object') {
+          return 1500;
+        } else if (d.nodeType === 'collAssoc') {
+          return 600;
+        } else if (d.nodeType === 'subAssoc') {
+          return 300;
+        }
       });
-    this.nodes.call(this.force.drag);
-    this.nodelabelsInner.call(this.force.drag);
+    let pathData = symbolGenerator;
+
+    this.nodeElements = this.nodeGroup.selectAll('path')
+      .data(this.dataset.nodes, node => { return node.d3Id; });
+
+    let nodeEnter = this.nodeElements
+      .enter()
+      .append('path')
+      .attr('d', pathData)
+      .style('fill', d => d.color)
+      .style('cursor', 'pointer')
+      .on('click', d => {
+        if (d.clickable) {
+          this.chartClick(d, d.nodeType);
+        }
+      })
+      .call(this.dragDrop);
+
+    this.nodeElements.exit().remove();
+
+    this.nodeElements = nodeEnter.merge(this.nodeElements);
+
+    this.textElements = this.textGroup.selectAll('text')
+      .data(this.dataset.nodes, node => { return node.d3Id; });
+
+    let textEnter = this.textElements
+      .enter()
+      .append('text')
+      .text(d => {
+        if (d.nodeType === 'object') {
+          return d.type;
+        } else if
+        (d.nodeType === 'collAssoc') {
+          return d.name.substring(0, 2);
+        }
+      })
+      .attr('dy', d => d.nodeType === 'object' ? 7 : 4)
+      .attr('font-size', d => d.nodeType === 'object' ? 20 : 12)
+      .attr('fill', 'white')
+      .style("text-anchor", "middle")
+      .attr('cursor', 'pointer')
+      .on('click', d => {
+        if (d.clickable) {
+          this.chartClick(d, d.nodeType);
+        }
+      })
+      .call(this.dragDrop);
+
+    this.textElements.exit().remove();
+
+    this.textElements = textEnter.merge(this.textElements);
+
+    this.textElementsTitles = this.textGroupTitles.selectAll('svg')
+      .data(this.dataset.nodes, node => { return node.d3Id; });
+
+    let textEnterTitles = this.textElementsTitles
+      .enter()
+      .append('svg');
+
+    textEnterTitles
+      .append('text')
+      .attr('class', 'labelsOld')
+      .text(d => d.nodeType === 'object' ? d.name.toLowerCase() : d.name)
+      .attr('dy', d => d.nodeType === 'object' ? 38 : d.nodeType === 'collAssoc' ? 26 : 22)
+      .attr('fill', d => d.nodeType === 'object' ? '#676767' : '#565656')
+      .attr('font-size', d => d.nodeType === 'object' ? 18 : 13)
+      .attr('letter-spacing', d => d.nodeType === 'object' ? -2 : -.3)
+      .attr('font-weight', d => d.nodeType === 'object' ? 'bolder' : 400)
+      .style('cursor', d => d.nodeType === 'object' ? 'default' : 'pointer')
+      .on('click', d => {
+        if (d.clickable) {
+          this.chartClick(d, d.nodeType);
+        }
+      });
+
+    textEnterTitles
+      .append('text')
+      .attr('class', 'labelsOld')
+      .text(d => d.objectId)
+      .attr('dy', 52)
+      .attr('dx', 5)
+      .attr('fill', '#676767')
+      .attr('font-size', 11)
+      .attr('font-weight', 'lighter')
+      .style('cursor', 'default');
+
+    this.textElementsTitles.exit().remove();
+
+    this.textElementsTitles = textEnterTitles.merge(this.textElementsTitles);
+
+    d3.selectAll('.labelsOld')
+      .each(function (d) {
+        let text = d3.select(this);
+        text.attr('stroke', (d1: any) => {
+          if (d1.state === 'old') { return 'lightgray'; }
+        });
+        text.attr('stroke-width', (d1: any) => {
+          if (d1.state === 'old') { return 0.8; }
+        });
+      });
+
+    this.simulation.nodes(this.dataset.nodes).on('tick', () => {
+
+      this.linkElements
+        .attr('x1', link => { return link.source.x; })
+        .attr('y1', link => { return link.source.y; })
+        .attr('x2', link => { return link.target.x; })
+        .attr('y2', link => { return link.target.y; });
+
+      this.nodeElements
+        .attr('transform', function (d) { return 'translate(' + d.x + ' ' + d.y + ')'; });
+
+      this.textElements
+        .attr('x', node => { return node.x; })
+        .attr('y', node => { return node.y; });
+
+      this.textElementsTitles
+        .attr('x', node => { return node.x; })
+        .attr('y', node => { return node.y; });
+    });
+
+    this.simulation.force('link').links(this.dataset.edges);
+    this.simulation
+      .alphaTarget(0.9)
+      .restart();
+
+    if (this.d3StoppingTimer) {
+      clearTimeout(this.d3StoppingTimer);
+    }
+
+    this.d3StoppingTimer = setTimeout(() => {
+      this.simulation.alphaTarget(0);
+    }, 500);
   }
 
   private _addToNodes(assocListIndex?: number) {
@@ -529,6 +614,18 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
       this._subAssocParent = null;
     }
 
+    let parentNode = this.dataset.nodes[this._sourceNode] || null;
+    let newX = 0;
+    let newY = 0;
+
+    if (parentNode && parentNode.x && parentNode.y) {
+      let diffX = parentNode.x - this.clickedSubAssocX;
+      let diffY = parentNode.y - this.clickedSubAssocY;
+
+      newX = this.calculateStartingXPosition(diffX, diffY, this.clickedSubAssocX);
+      newY = this.calculateStartingYPosition(diffX, diffY, this.clickedSubAssocY);
+    }
+
     // newNode
     this.dataset.nodes.push({
       name: this._lastInHistArr().NAME,
@@ -537,8 +634,11 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
       color: this._colorizeMe(this._lastInHistArr().TYPE),
       parentNode: this.dataset.nodes[this._sourceNode] || null,
       genID: this._lastInHistArr().genID,
+      d3Id: Math.random().toString(),
       objectId: this._lastInHistArr().OBJECT,
-      type: this.historyObj.TYPE.charAt(0)
+      type: this.historyObj.TYPE.charAt(0),
+      x: this.clickedSubAssocX,
+      y: this.clickedSubAssocY
     });
 
     // nodeCollection
@@ -556,7 +656,6 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
     // create Collapsed Associations Nodes
     for (let i = 0; i < this.collAssoc.length; i++) {
       let nodeName = this.collAssoc[i].name;
-
       this.dataset.nodes.push({
         name: nodeName,
         nodeType: this._collAssocType,
@@ -567,7 +666,10 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
         numbOfAssoc: this.collAssoc.length,
         color: this._colorizeMe(nodeName),
         parentNode: this.dataset.nodes[this._indexInNodesArray],
-        genID: this.collAssoc[i].genID
+        genID: this.collAssoc[i].genID,
+        d3Id: Math.random().toString(),
+        x: newX,
+        y: newY
       });
 
       // connect association to parent object
@@ -585,7 +687,7 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
       let data = await this._metanavService.getDetails(this.sasObjectUri);
 
       data.Associations.forEach(el => {
-        el.genID = Math.random();
+        el.genID = Math.random().toString();
       });
 
       this.detailArray.push({
@@ -593,7 +695,7 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
         ATTRPROP: data.attrprop
       });
 
-      this.collAssoc = this._collapseAssociations(data.Associations);
+      this.collAssoc = this._createGroupedAssociations(data.Associations);
       this.detailsName = this._getValueByName(this.detailArray[this.detailArray.length - 1].ATTRPROP);
 
       this.historyObj = {
@@ -605,7 +707,7 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
         typeURL: this._getTypeURL(this.url),
         COLOR: this._colorizeMe(this.dataFromUrl[0]),
         ASCCLR: this._colorizeMe(this.nextAssoc),
-        genID: Math.random(),
+        genID: Math.random().toString(),
         EXPANDED: true
       };
       this.historyArray.push(this.historyObj);
