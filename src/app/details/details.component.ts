@@ -274,11 +274,11 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
     return collapsedAssoc;
   }
 
-  private _getNodeIndexById(nodeId: string): number {
+  private _getNodeIndexById(nodeId: string): any {
     let returnObject = this._nodeCollection
       .filter(e => nodeId === e.id)
       .shift();
-    return returnObject !== undefined ? returnObject.index : -1;
+    return returnObject;
   }
 
   private _reactivateNode(historyNode: any) {
@@ -330,38 +330,102 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
   }
 
   public chartClick(d: any, nodeType: any) {
-    if (nodeType === this._subAssocType) {
-      this.clickedSubAssoc = d;
-      this.clickedSubAssocX = d.x;
-      this.clickedSubAssocY = d.y;
-      this._removeSubAssociaction(d.index);
-      this.updateProperties(d.assocName, d.numbOfAssoc, d.indexAssoc, d.parentNode);
-
-      let searchResult = this._getNodeIndexById(this._metanavService.getLastValueFromString(d.nodeURI));
-      if (searchResult > -1) {
-        this._createLinkForNodes(d.parentNode, this.dataset.nodes[searchResult]);
-        this._moveToOld(this.dataset.nodes);
-        this._reactivateNode(this.dataset.nodes[searchResult]);
-        this.backToExistingNode = true;
-      }
-      this.goToDetails(d.nodeURI);
-      this._disableClick(d);
-    } else if (nodeType === this._collAssocType) {
-      this.pushCollapsedAssociations(d);
-      this.subAssocNumber = d.assocArry.groupAssoc.length;
-      this._disableClick(d);
-      this.updateGraph();
-      if (d.assocArry.groupAssoc.length > 15) {
-        this.displayAlert = true;
-      }
-
-      if (this.alertRemovingTimer) {
-        clearTimeout(this.alertRemovingTimer);
-      }
-      this.alertRemovingTimer = setTimeout(() => {
-        this.displayAlert = false;
-      }, 5000);
+    if (!d.accNodes) {
+      d.accNodes = [];
     }
+
+    if (!d.accLinks) {
+      d.accLinks = [];
+    }
+
+    let pointingNodes = this.dataset.edges
+      .filter(e => e.source === d)
+      .map(e => e.target);
+
+    let startingNodes = this.dataset.edges.map(e => e.source);
+    let leafNodes = pointingNodes.filter(e => !startingNodes.includes(e));
+
+    let targetNodes = this.dataset.edges
+      .filter(e => e.source !== d)
+      .map(e => e.target);
+
+    let pointingLinks = this.dataset.edges.filter(e => e.source === d);
+    let startingLinks = this.dataset.edges.map(e => e.source);
+    let leafLinks = pointingLinks.filter(e => !startingLinks.includes(e.target));
+
+    if (d.accNodes.length === 0 && pointingNodes.length === 0) {
+      if (nodeType === this._subAssocType) {
+        this.clickedSubAssoc = d;
+        this.clickedSubAssocX = d.x;
+        this.clickedSubAssocY = d.y;
+        this._removeSubAssociaction(d.index);
+        this.updateProperties(d.assocName, d.numbOfAssoc, d.indexAssoc, d.parentNode);
+        this._getNodeIndexById(this._metanavService.getLastValueFromString(d.nodeURI));
+        let searchResult = this._getNodeIndexById(this._metanavService.getLastValueFromString(d.nodeURI));
+        if (searchResult) {
+          this._createLinkForNodes(d.parentNode, this.connectSubAssocToExistingObject(searchResult.id));
+          this._moveToOld(this.dataset.nodes);
+          this._reactivateNode(this.connectSubAssocToExistingObject(searchResult.id));
+          this.backToExistingNode = true;
+        }
+        this.goToDetails(d.nodeURI);
+        this._disableClick(d);
+      } else if (nodeType === this._collAssocType) {
+        this.pushCollapsedAssociations(d);
+        this.showAlert(d.assocArry.groupAssoc.length);
+        this.updateGraph();
+      }
+
+    } else if (d.accNodes.length === 0 && pointingNodes.length > 0 && leafNodes.length !== 0) {
+      let unRemovingNodes = leafNodes.filter(e => targetNodes.includes(e));
+      let unRemovingLinks = leafLinks.filter(e => targetNodes.includes(e.target));
+      let removingNodes = leafNodes.filter(e => !unRemovingNodes.includes(e));
+      let removingLinks = leafLinks.filter(e => !unRemovingLinks.includes(e));
+      removingNodes.forEach(element => {
+        this.dataset.nodes.splice(this.dataset.nodes.indexOf(element), 1);
+      });
+      removingLinks.forEach(element => {
+        this.dataset.edges.splice(this.dataset.edges.indexOf(element), 1);
+      });
+
+      removingNodes.forEach(element => {
+        d.accNodes.push(element);
+      });
+      removingLinks.forEach(element => {
+        d.accLinks.push(element);
+      });
+      this.updateGraph();
+    } else if (d.accNodes.length > 0) {
+      d.accNodes.forEach(element => {
+        this.dataset.nodes.push(element);
+      });
+      d.accLinks.forEach(element => {
+        this.dataset.edges.push(element);
+      });
+      d.accNodes = [];
+      d.accLinks = [];
+      if (d.nodeType === 'collAssoc') {
+        this.showAlert(d.assocArry.groupAssoc.length);
+      }
+      this.updateGraph();
+    }
+  }
+
+  private connectSubAssocToExistingObject(object): any {
+    return this.dataset.nodes.filter(e => e.objectId === object).shift();
+  }
+
+  private showAlert(numberOfSubAssociations) {
+    this.subAssocNumber = numberOfSubAssociations;
+    if (this.subAssocNumber > 15) {
+      this.displayAlert = true;
+    }
+    if (this.alertRemovingTimer) {
+      clearTimeout(this.alertRemovingTimer);
+    }
+    this.alertRemovingTimer = setTimeout(() => {
+      this.displayAlert = false;
+    }, 5000);
   }
 
   public initializeGraph() {
@@ -637,6 +701,7 @@ export class DetailsComponent implements AfterViewInit, OnDestroy {
       d3Id: Math.random().toString(),
       objectId: this._lastInHistArr().OBJECT,
       type: this.historyObj.TYPE.charAt(0),
+      clickable: true,
       x: this.clickedSubAssocX,
       y: this.clickedSubAssocY
     });
