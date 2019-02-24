@@ -2,11 +2,20 @@
 ####################################################################
 # PROJECT: Meta-Navigator                                          #
 ####################################################################
+
+# Before running, be sure to modify /src/app/boemska/h54s.config.ts
+# remote config should be set as follows:
+#export const AdapterSettings = {
+#  metadataRoot: "/Apps/Meta Navigator/",
+#  hostUrl: "https://apps.boemskats.com",
+#  isRemoteConfig: false
+#};
+
 set -o nounset                              # Treat unset variables as an error
-BUILDLOC="/tmp/ergolineage"
+BUILDLOC="/tmp/undemobuild"
 BUILDSTP="/Shared%20Folders/admin/injectSAS"
 BUILDSERVER="https://apps.boemskats.com"
-METAROOT="/Tests/MetaNavDemoBuild";
+METAROOT="/Tests/MetaNavigatorDemo";
 SCPTARGET="apps.boemskats.com:/pub/ht/demo/undemo"
 
 # get root of repo
@@ -34,27 +43,26 @@ fi
 CREDS=$(cat ~/.ssh/sascredurl)
 
 #  Build Frontend
-read -s -p "Build Frontend? " -i "N" -e answer
+read -s -p "Build Frontend? (type any character for yes) " -i "N" -e answer
 echo "Build Frontend? You answered: $answer"
 if [ "$answer" != "N" ]
 then
     npm install
-    ng build --prod --build-optimizer
+    ng build --prod --aot --base-href ./
+    cd dist
+    mv main.*.js    main.js
+    mv inline.*.js inline.js
+    mv scripts.*.js scripts.js
+    mv styles.*.css styles.css
+    mv vendor.*.js vendor.js
+    # rename files and update index.html
+    perl -i -pe 's/main\..+?\.js/main.js/g;' index.html
+    perl -i -pe 's/inline\..+?\.js/inline.js/g;' index.html
+    perl -i -pe 's/scripts\..+?\.js/scripts.js/g;' index.html
+    perl -i -pe 's/styles\..+?\.css/styles.css/g;' index.html
+    perl -i -pe 's/vendor\..+?\.js/vendor.js/g;' index.html
+    cd ..
 fi
-
-# rename files and update index.html
-cd dist
-mv main.*.js    main.js
-mv inline.*.js inline.js
-mv scripts.*.js scripts.js
-mv styles.*.css styles.css
-
-perl -i -pe 's/main\..+?\.js/main.js/g;' index.html
-perl -i -pe 's/inline\..+?\.js/inline.js/g;' index.html
-perl -i -pe 's/scripts\..+?\.js/scripts.js/g;' index.html
-perl -i -pe 's/styles\..+?\.css/styles.css/g;' index.html
-
-cd ..
 
 # make build folder
 if [ -d "$BUILDLOC" ]; then
@@ -78,7 +86,7 @@ curl -v -L -k  -b cookiefile -c cookiefile \
 
 curl -L -k  -b cookiefile -c cookiefile \
     -H "Content-Type: multipart/form-data" \
-    -F "data=@$CWD/build/demo.sas" \
+    -F "data=@$CWD/build/demobuild.sas" \
     -F "zipfile=@$BUILDLOC/archive.zip" \
       "$STPSVR?_program=$BUILDSTP&$CREDS&METAROOT=$METAROOT" \
     --output "$BUILDLOC/sas.zip"
