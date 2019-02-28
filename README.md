@@ -5,6 +5,9 @@ It is easy to use, easy to deploy, secured by SAS® Authentication, and beautifu
 
 This application is useful for Developers and Administrators who need to understand the nuances of, or specifics about, metadata.  Being a web app, it is possible to share a link to any object!  As can be seen in the SAS code, this tool only READS metadata, it cannot be used to WRITE.
 
+![gifrecord_2019-02-28_174948](https://user-images.githubusercontent.com/11962123/53587186-a6657e00-3b81-11e9-9ddc-f95302dbdba1.gif)
+
+
 ## Usage
 The Metadata Navigator for SAS® is split into three parts:
 
